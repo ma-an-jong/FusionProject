@@ -60,6 +60,7 @@ public class LectureDAO {
         return list;
     }
 
+    //교수가 담당한 교과목 조회
     public List<Lecture_Subject_ProfessorDTO> selectByProfessor(String p_name){
         List<Lecture_Subject_ProfessorDTO> list = null;
 

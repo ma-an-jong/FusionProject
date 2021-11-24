@@ -4,7 +4,8 @@ public class Protocol {
 
     private String packet = "";
     private String protocolType;
-
+    
+    //생성자 교체 요망
     public Protocol()
     {
         this(PT_UNDEFINED);
@@ -45,6 +46,23 @@ public class Protocol {
     public static final int PT_TIMETABLE_KEY_POS = 1;
 
     //개설 교과목 목록 조회
+        //딱히 필요한 정보 없음
+    
+    //교수담당과목 조회 관련 위치
+    public static final int PT_TEACHING_KEY_POS = 1;
+
+    //담당교과목 수강신청 학생 목록 조회 요청 위치
+    public static final int PT_MYSTUDENT_KEY_POS = 1;
+    public static final int PT_MYSTUDENT_PAGENUM_POS = 2;
+
+    //교수,학생 정보 조회 요청
+        //은 딱히 없음
+
+    //사용자 계정 등록 요청
+    public static final int PT_MEMBER_ENROLL_KEY_POS = 1;
+    public static final int PT_MEMBER_ENROLL_NAME_POS = 2;
+    public static final int PT_MEMBER_ENROLL_PASSWORD_POS = 3;
+
 
 
 

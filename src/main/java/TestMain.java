@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class TestMain {
-    static AdminDAO adminDAO = new AdminDAO();
+    //static AdminDAO adminDAO = new AdminDAO();
     static SqlSessionFactory sqlSessionFactory = MyBatisConnectionFactory.getSqlSessionFactory();
     static SubjectDAO subjectDAO = new SubjectDAO(sqlSessionFactory);
     static LectureDAO lectureDAO = new LectureDAO(sqlSessionFactory);
@@ -26,40 +26,40 @@ public class TestMain {
 
 //1.회원 CRU
 
-    //admin 1명 생성
-    public static void adminCreate(){
-        adminDAO.createAdmin("admin","1234");
-    }
-    //professor 2명 생성
-    public static void professorCreate(){
-
-        adminDAO.createProfessor("sungryul","1234","컴퓨터 소프트웨어","김성렬","010-106-107");
-        adminDAO.createProfessor("sunmyeng","1234","컴퓨터 소프트웨어","김선명","010-441-442");
-
-    }
-    //학생 4명 생성
-    public static void studentCreate(){
-
-        adminDAO.createStudent("20180167","991113","의예과","김민종",2,"010-8589-0670");
-        adminDAO.createStudent("20180017" , "991107" ,"축구학과","강수성",2,"010-2767-4303");
-        adminDAO.createStudent("20171290","980707","연기학과","황주희",4,"010-7504-4057");
-        adminDAO.createStudent("20180358","990912","호텔관광과","김호진",2,"010-1234-1234");
-    }
-
-    public static void selectUser(){
-
-        List list = new ArrayList();
-        list = adminDAO.selectAllStudent();
-        printList(list);
-
-        list = new ArrayList();
-        list = adminDAO.selectAllProfessor();
-        printList(list);
-
-        list = new ArrayList();
-        list = adminDAO.selectAllAdmin();
-        printList(list);
-    }
+//    //admin 1명 생성
+//    public static void adminCreate(){
+//        adminDAO.createAdmin("admin","1234");
+//    }
+//    //professor 2명 생성
+//    public static void professorCreate(){
+//
+//        adminDAO.createProfessor("sungryul","1234","컴퓨터 소프트웨어","김성렬","010-106-107");
+//        adminDAO.createProfessor("sunmyeng","1234","컴퓨터 소프트웨어","김선명","010-441-442");
+//
+//    }
+//    //학생 4명 생성
+//    public static void studentCreate(){
+//
+//        adminDAO.createStudent("20180167","991113","의예과","김민종",2,"010-8589-0670");
+//        adminDAO.createStudent("20180017" , "991107" ,"축구학과","강수성",2,"010-2767-4303");
+//        adminDAO.createStudent("20171290","980707","연기학과","황주희",4,"010-7504-4057");
+//        adminDAO.createStudent("20180358","990912","호텔관광과","김호진",2,"010-1234-1234");
+//    }
+//
+//    public static void selectUser(){
+//
+//        List list = new ArrayList();
+//        list = adminDAO.selectAllStudent();
+//        printList(list);
+//
+//        list = new ArrayList();
+//        list = adminDAO.selectAllProfessor();
+//        printList(list);
+//
+//        list = new ArrayList();
+//        list = adminDAO.selectAllAdmin();
+//        printList(list);
+//    }
 
 //2.교과목
 
@@ -407,10 +407,10 @@ public class TestMain {
 
 
 //7. paging
-    public static void paging(){
-        CourseDetailsDTO courseDetailsDTO = new CourseDetailsDTO();
-        courseDetailsDTO.setLecture_idx(2);
-        List<StudentDTO> list = courseRegistration.selectWithPaging(courseDetailsDTO,2);
+    public static void paging()
+    {
+        String key = "CS0016-02";
+        List<StudentDTO> list = courseRegistration.selectWithPaging(key,2);
         printList(list);
     }
 
@@ -423,7 +423,7 @@ public class TestMain {
 //
 //            StudentDAO studentDAO = new StudentDAO();
 //            studentDAO.updateName(4,"박민종");
-            selectUser();
+ //           selectUser();
 
 
 //

@@ -187,13 +187,13 @@ public class CourseRegistration {
 
     }
 
-    public List<StudentDTO> selectWithPaging(CourseDetailsDTO courseDetailsDTO, int pageNum){
+    public List<StudentDTO> selectWithPaging(String key, int pageNum){
 
         List<StudentDTO> list = null;
 
         HashMap<String,Object> map = new HashMap<String,Object>();
 
-        map.put("cd_lecture_idx", courseDetailsDTO.getLecture_idx());
+        map.put("subject_code", key);
         map.put("pageNum",(pageNum-1)*2);
 
         try(SqlSession session = sqlSessionFactory.openSession()) {

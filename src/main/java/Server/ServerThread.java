@@ -28,7 +28,6 @@ public class ServerThread extends Thread {
     {
         this.socket = socket;
 
-        //TODO: DB 연결 2번해야 되는구만.... MYBATIS + JDBC
         jdbcConn = JDBCConnection.getConnection(JDBCConnection.url);
         sqlSessionFactory =  MyBatisConnectionFactory.getSqlSessionFactory();
         System.out.println("서버 Thread 생성");
@@ -51,12 +50,13 @@ public class ServerThread extends Thread {
         // TODO: 로그인 정보 요청
         
         boolean flag = true;
+
+        Protocol protocol;
+        String packetType;
+        String packet[];
+
         while (flag)
         {
-            Protocol protocol;
-            String packetType;
-            String packet[];
-
             try
             {
                 packet = in.readLine().split(Protocol.splitter);
@@ -130,7 +130,7 @@ public class ServerThread extends Thread {
                     }
 
                     protocol = new Protocol(Protocol.PT_LOGIN_RESULT);
-                     packet = new String[Protocol.PT_LOGIN_RESULT_LENGTH];
+                    packet = new String[Protocol.PT_LOGIN_RESULT_LENGTH];
                     packet[Protocol.PT_LOGIN_CODE_POS] = "3";
                     protocol.setPacket(packet);
                     writePacket(protocol.getPacket());
@@ -318,8 +318,144 @@ public class ServerThread extends Thread {
                 {
                     break;
                 }
+                case Protocol.CS_REQ_TEACHING_VIEW: //담당 교과목 목록 조회
+                {
+
+                    LectureDAO dao = new LectureDAO(sqlSessionFactory);
+                    String key = packet[Protocol.PT_TEACHING_KEY_POS];
+                    List<Lecture_Subject_ProfessorDTO> list = dao.selectByProfessor(key);
+                    int index = 1;
+                    packet = new String[list.size() + 1];
+                    packet[0] = "4";
+
+                    for(Lecture_Subject_ProfessorDTO dto : list)
+                    {
+                        packet[index++] = dto.toString();
+                    }
+
+                    protocol = new Protocol(Protocol.SC_RES_TEACHING_VIEW);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+                    System.out.println("교수 담당 과목 조회 성공");
+                    break;
+                }
+                case Protocol.CS_REQ_SYLLABUS_ENROLL: //강의계획서 관련된것은 제일 나중에
+                {
+                    break;
+                }
+                case Protocol.CS_REQ_MYSTUDENT_VIEW:  //담당교과목 수강신청 학생 목록 조회 요청 TODO: 페이징 기능인데
+                {
+                    String key = packet[Protocol.PT_MYSTUDENT_KEY_POS];
+                    int pageNum = Integer.parseInt(packet[Protocol.PT_MYSTUDENT_PAGENUM_POS]);
+                    CourseRegistration dao = new CourseRegistration(sqlSessionFactory);
+
+                    List<StudentDTO> list = dao.selectWithPaging(key,pageNum);
+                    packet = new String[list.size() + 1];
+                    packet[0] = "8";
+                    int index = 1;
+
+                    for(StudentDTO d : list)
+                    {
+                        //2.학생정보 담을거 student_code,sname,department,grade,phone 만 정리
+                        packet[index++] = d.toString();
+                    }
+
+                    protocol = new Protocol(Protocol.SC_RES_MYSTUDENT_VIEW);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+                    break;
 
 
+
+
+                }
+                case Protocol.CS_REQ_TEACHINGTABLE_VIEW: //TODO:담당 교과목 시간표 조회 = 담당 교과목 목록 조회
+                {
+                    LectureDAO dao = new LectureDAO(sqlSessionFactory);
+                    String key = packet[Protocol.PT_TEACHING_KEY_POS];
+
+                    List<Lecture_Subject_ProfessorDTO> list = dao.selectByProfessor(key);
+                    int index = 1;
+                    packet = new String[list.size() + 1];
+                    packet[0] = "A";
+
+                    for(Lecture_Subject_ProfessorDTO dto : list)
+                    {
+                        packet[index++] = dto.toString();
+                    }
+
+                    protocol = new Protocol(Protocol.SC_RES_TEACHINGTABLE_VIEW);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+                    break;
+
+
+                }
+                case Protocol.CS_REQ_MEMBER_VIEW: //4.교수랑 학생을 교번이랑 학번으로 찾아서 조회하는 메소드 필요
+                {
+                    AdminDAO dao = new AdminDAO(jdbcConn);
+                    //4.교수랑 학생을 교번이랑 학번으로 찾아서 조회하는 메소드 필요
+                    //ProfessorDTO pdto = dao.selectAllProfessor();
+                    //StudentDTO sdto = dao.selectAllStudent();
+                    int index = 1;
+                    packet = new String[2];
+                    packet[0] = "0";
+                    //3.관리자가 교수랑 학생정보를 조회할때 이쁘게 출력할 정보들
+
+                    //packet[1] = pdto or sdto
+
+                    protocol = new Protocol(Protocol.SC_RES_ALLMEMBER_VIEW);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+                    break;
+                }
+                case Protocol.CS_REQ_ALLMEMBER_VIEW://모든 교수,학생 정보 조회 요청
+                {
+                    AdminDAO dao = new AdminDAO(jdbcConn);
+                    List<ProfessorDTO> plist = dao.selectAllProfessor();
+                    List<StudentDTO> slist = dao.selectAllStudent();
+                    int index = 1;
+                    packet = new String[plist.size() + slist.size() + 1];
+                    packet[0] = "16";
+                    //3.관리자가 교수랑 학생정보를 조회할때 이쁘게 출력할 정보들
+                    for(ProfessorDTO dto : plist)
+                    {
+                        packet[index++] = dto.toString();
+                    }
+                    for(StudentDTO dto : slist)
+                    {
+                        packet[index++] = dto.toString();
+                    }
+
+                    protocol = new Protocol(Protocol.SC_RES_ALLMEMBER_VIEW);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+                    break;
+
+
+                }
+                case Protocol.CS_REQ_MEMBER_ENROLL:
+                    //TODO:사용자 계정 등록 요청 학생 만들건지 교수 만들건지 등 데이터 부족
+                {
+                    //교원번호 or 학번, 이름, id, password + 부서 학년 전화번호 - id
+                    String key = packet[Protocol.PT_MEMBER_ENROLL_KEY_POS];
+                    String name = packet[Protocol.PT_MEMBER_ENROLL_NAME_POS];
+                    String password = packet[Protocol.PT_MEMBER_ENROLL_PASSWORD_POS];
+                    String department ="";
+                    int grade = 1;
+                    String phone ="";
+                    AdminDAO dao = new AdminDAO(jdbcConn);
+
+                    dao.createStudent(key,password,department,name,grade,phone);
+                    packet = new String[1];
+                    packet[0] = "E";
+                    protocol = new Protocol(Protocol.SC_RES_MEMBER_ENROLL);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+                    System.out.println("사용자 계정 생성 완료");
+                    break;
+
+                }
 
 
             }

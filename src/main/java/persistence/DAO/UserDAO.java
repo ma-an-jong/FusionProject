@@ -220,6 +220,9 @@ public class UserDAO {
 
         return list;
     }
+    
+    //4.교수랑 학생을 교번이랑 학번으로 찾아서 조회하는 메소드 필요
+    
 
 
 }

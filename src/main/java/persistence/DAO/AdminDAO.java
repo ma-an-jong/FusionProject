@@ -16,13 +16,13 @@ public class AdminDAO extends UserDAO{
 
     /*
 
-교과목 생성/수정/삭제
+        교과목 생성/수정/삭제
 
-강의 계획서 입력 기간 설정
-  설정된 입력 기간 내에만 강의 계획서 입력 기능 활성화
+        강의 계획서 입력 기간 설정
+          설정된 입력 기간 내에만 강의 계획서 입력 기능 활성화
 
-학년별 수강 신청 기간 설정
-  - 학년 단위로 교과목 수강 신청 기간을 설정할 수 있음
+        학년별 수강 신청 기간 설정
+          - 학년 단위로 교과목 수강 신청 기간을 설정할 수 있음
 
      */
 
@@ -132,6 +132,7 @@ public class AdminDAO extends UserDAO{
                 e.printStackTrace();
                 System.out.println("ROLLBACK 실패");
             }
+
         }
 
     }

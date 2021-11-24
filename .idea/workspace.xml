@@ -4,7 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9346d34b-57eb-45c5-8a5e-be2077ca8e3b" name="Changes" comment="" />
+    <list default="true" id="9346d34b-57eb-45c5-8a5e-be2077ca8e3b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Server/Protocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Server/Protocol.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Server/ServerThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Server/ServerThread.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TestMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/AdminDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/AdminDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/CourseRegistration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/CourseRegistration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/LectureDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/LectureDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/UserDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DTO/CourseDetailsDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DTO/CourseDetailsDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DTO/Lecture_Subject_ProfessorDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DTO/Lecture_Subject_ProfessorDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DTO/ProfessorDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DTO/ProfessorDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DTO/StudentDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DTO/StudentDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/sqlmapper/course.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/sqlmapper/course.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -23,6 +39,9 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
       <filtered-out-file-type name="LOCAL_BRANCH" />
@@ -32,13 +51,16 @@
     </file-type-list>
   </component>
   <component name="ProjectId" id="1zE2VyEEcUDt3lnfOkpktE15fLm" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="java.sql.Driver&#10;mysql" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -116,12 +138,23 @@
       <workItem from="1637557552157" duration="70000" />
       <workItem from="1637557677127" duration="104000" />
       <workItem from="1637673078370" duration="6545000" />
-      <workItem from="1637754149234" duration="393000" />
+      <workItem from="1637754149234" duration="6674000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
