@@ -40,6 +40,8 @@ public class CourseRegistration {
         return list;
     }
 
+    //5.CourseRegistration -> selectCourseByIdx 를 과목코드로 조회하는 기능 만들기
+    // lecture랑 subject JOIN해서 만들어야함 
     public CourseDetailsDTO selectCourseByIdx(int lecture_idx){
         CourseDetailsDTO dto = null;
 

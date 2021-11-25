@@ -26,7 +26,7 @@ public class CourseDetailsDTO {
     private int current;
     private String classroom;
 
-
+//6.CouserDetailDTO에서 개설 교과목 정보 요청할때 출력해줄 메소드
 
 
 }

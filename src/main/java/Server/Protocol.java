@@ -63,8 +63,25 @@ public class Protocol {
     public static final int PT_MEMBER_ENROLL_NAME_POS = 2;
     public static final int PT_MEMBER_ENROLL_PASSWORD_POS = 3;
 
+    //개설 교과목 정보
+    public static final int PT_OPENSUBINFO_KEY_POS = 1; //개설 교과목 코드 위치
+    public static final int PT_OPENSUBINFO_NAME_POS = 2; // 이름위치
+    public static final int PT_OPENSUBINFO_PNAME_POS = 3; // 교수 이름위치
+    public static final int PT_OPENSUBINFO_GRADE_POS = 4; // 학점위치
+    public static final int PT_OPENSUBINFO_LECTURE_TIME_POS = 5; // 강의시간
+    
+    //관리자가 교과목 수정
+    public static final int PT_Subject_OLD_NAME_POS = 1; //old name 위치
+    public static final int PT_Subject_NEW_NAME_POS = 2; //new name 위치
+    
+    //관리자가 교과목 삭제
+    public static final int PT_Subject_KEY_POS = 1;
 
 
+    //관리자가 //교과목 수정 요청
+    public static final int PT_LECTURE_KEY_POS= 1;
+    public static final int PT_LECTURE_CLASSROOM_POS= 2;
+    public static final int PT_LECTURE_MAXIMUM_POS= 3;
 
     //프로토콜 타입
     public static final String PT_EXIT = "0"; //프로그램 종료

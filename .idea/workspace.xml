@@ -5,21 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9346d34b-57eb-45c5-8a5e-be2077ca8e3b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/FusionProject.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Server/Protocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Server/Protocol.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Server/ServerThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Server/ServerThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TestMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/AdminDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/AdminDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/CourseRegistration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/CourseRegistration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/LectureDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/LectureDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/UserDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/SubjectDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/SubjectDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DTO/CourseDetailsDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DTO/CourseDetailsDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DTO/Lecture_Subject_ProfessorDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DTO/Lecture_Subject_ProfessorDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DTO/ProfessorDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DTO/ProfessorDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DTO/StudentDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DTO/StudentDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sqlmapper/course.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/sqlmapper/course.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,8 +61,8 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.project.gradle" />
   </component>
   <component name="RecentsManager">
@@ -155,6 +148,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
