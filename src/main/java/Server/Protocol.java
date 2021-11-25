@@ -42,6 +42,11 @@ public class Protocol {
     public static final int PT_PERSONALINFO_PHONE_POS = 4;
     public static final int PT_PERSONALINFO_GRADE_POS = 5;
 
+    //학생 수강신청 관련 우치
+    public static final int PT_MYSUBJECT_SUBJECT_CODE_POS = 1;
+    public static final int PT_MYSUBJECT_STUDENT_CODE_POS = 2;
+
+
     //학생 본인 시간표 조회 요청 위치
     public static final int PT_TIMETABLE_KEY_POS = 1;
 
@@ -82,6 +87,13 @@ public class Protocol {
     public static final int PT_LECTURE_KEY_POS= 1;
     public static final int PT_LECTURE_CLASSROOM_POS= 2;
     public static final int PT_LECTURE_MAXIMUM_POS= 3;
+
+    //수강신청 기간 등록 요청
+    public static final int PT_REGISTRATIONPERIOD_GRADE_POS = 1;
+    public static final int PT_REGISTRATIONPERIOD_START_POS = 2;
+    public static final int PT_REGISTRATIONPERIOD_END_POS = 3;
+
+
 
     //프로토콜 타입
     public static final String PT_EXIT = "0"; //프로그램 종료

@@ -18,7 +18,6 @@ public class CourseDetailsDTO {
     private String phone;
 
     private int lecture_idx;
-
     private int lecture_professor_idx;
     private String syllabus;
     private String lecture_time;

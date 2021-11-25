@@ -10,6 +10,7 @@ import persistence.PooledDataSource;
 import java.io.*;
 import java.net.Socket;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -148,7 +149,44 @@ public class ServerThread extends Thread {
                 {
                     break;
                 }
-                //TODO : 7번
+                case Protocol.CS_REQ_REGISTRATION:
+                {
+                    break;
+                }
+                case Protocol.CS_REQ_MYSUBJECT_ENROLL: //TODO: 데이터 수정 + 메소드 부족
+                {
+                    CourseRegistration dao = new CourseRegistration(sqlSessionFactory);
+                    StudentDAO studentDAO = new StudentDAO(jdbcConn);
+                    LectureDAO lectureDAO = new LectureDAO(sqlSessionFactory);
+
+                    //학번, 과목코드
+                    String subjectCode = packet[Protocol.PT_MYSUBJECT_SUBJECT_CODE_POS];
+                    String studentCode = packet[Protocol.PT_MYSUBJECT_STUDENT_CODE_POS];
+
+                    StudentDTO studentDTO = studentDAO.searchByStudent_code(studentCode);
+                    LectureDTO lectureDTO = lectureDAO.searchBySubject_code(subjectCode);
+                    //11. LectureDAO -> searchBySubject_code(subjectCode); 과목코드로 개설 교과목 조회하는 기능
+
+                    //학년 학번 강의시간  강의 idx 현재인원 최대인원
+                    CourseDetailsDTO dto = new CourseDetailsDTO();
+                    dto.setGrade(studentDTO.getGrade());
+                    dto.setStudent_code(studentCode);
+
+                    dao.addCoure(dto);
+
+                    packet = new String[1];
+                    packet[0] = "A";
+                    protocol = new Protocol(Protocol.SC_RES_MYSUBJECT_ENROLL);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+                    break;
+                }
+
+                case Protocol.CS_REQ_CORRECTION:
+                {
+                    break;
+                }
+
                 case Protocol.CS_REQ_MYSUBJECT_VIEW: //내 수강 목록 조회
                 {
                     //클라이언트가 학번을 통해서 정보 조회하여 전달
@@ -183,6 +221,30 @@ public class ServerThread extends Thread {
                     }
 
                     break;
+                }
+                case Protocol.CS_REQ_MYSUBJECT_DELETE: //TODO: //수강 정정 요청 vs  //수강 과목 삭제 요청 + 데이터 수정 + 메소드 부족
+                {
+                    String subjectCode = packet[Protocol.PT_MYSUBJECT_SUBJECT_CODE_POS];
+                    String studentCode = packet[Protocol.PT_MYSUBJECT_STUDENT_CODE_POS];
+                    CourseRegistration dao = new CourseRegistration(sqlSessionFactory);
+                    CourseDetailsDTO dto = new CourseDetailsDTO();
+                    //학번 ,과목코드
+                    dto.setStudent_code(studentCode);
+                    //TODO:9.SUBJECTDAO에 과목코드를 입력하면 그에 해당하는 subject_idx 를 리턴하는 메소드
+                    dto.setLecture_idx(subjectCode);
+
+                    dao.deleteCourse(dto);
+
+                    packet = new String[1];
+                    packet[0] = "8";
+                    protocol = new Protocol(Protocol.SC_RES_MYSUBJECT_DELETE);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+
+                    break;
+
+
+
                 }
                 //TODO:학생 개인정보 요청 본인의 카테고리까지 전송하는걸로
                 case Protocol.CS_REQ_PERSONALINFO_VIEW:
@@ -406,7 +468,7 @@ public class ServerThread extends Thread {
 
                     //packet[1] = pdto or sdto
 
-                    protocol = new Protocol(Protocol.SC_RES_ALLMEMBER_VIEW);
+                    protocol = new Protocol(Protocol.SC_RES_MEMBER_VIEW);
                     protocol.setPacket(packet);
                     writePacket(protocol.getPacket());
                     break;
@@ -585,19 +647,42 @@ public class ServerThread extends Thread {
 
                     packet = new String[1];
                     packet[0] = "14";
-
+                    protocol = new Protocol(Protocol.SC_RES_LECTURE_DELETE);
                     protocol.setPacket(packet);
                     writePacket(protocol.getPacket());
                     break;
 
                 }
+                case Protocol.CS_REQ_SYLLABUSPERIOD_ENROLL: //pass
+                {
+                    break;
+                }
+
+                case Protocol.CS_REQ_REGISTRATIONPERIOD_ENROLL: // TODO:date 포맷 어떻게 할건지
+                {
+                    int grade = Integer.parseInt(packet[Protocol.PT_REGISTRATIONPERIOD_GRADE_POS]);
+                    String start_date = packet[Protocol.PT_REGISTRATIONPERIOD_START_POS];
+                    String end_date = packet[Protocol.PT_REGISTRATIONPERIOD_END_POS];
+
+                    Date start = new Date(0);
+                    Date end = new Date(0);
+                    
+
+                    LectureRegistrationDateDAO dao = new LectureRegistrationDateDAO(sqlSessionFactory);
+
+                    dao.setSeason(grade,start,end);
 
 
+                    packet = new String[1];
+                    packet[0] = "18";
+                    protocol = new Protocol(Protocol.SC_RES_REGISTRATIONPERIOD_ENROLL);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
 
-                /*
+                    break;
+                }
 
-                 */
-
+                //end
 
                 default:
                     throw new IllegalStateException("Unexpected value: " + packetType);
