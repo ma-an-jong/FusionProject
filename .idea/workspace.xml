@@ -5,21 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9346d34b-57eb-45c5-8a5e-be2077ca8e3b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Server/Protocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Server/Protocol.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Server/ServerThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Server/ServerThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TestMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/AdminDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/AdminDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/CourseRegistration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/CourseRegistration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/LectureDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/LectureDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/StudentDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/StudentDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/UserDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DTO/CourseDetailsDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DTO/CourseDetailsDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DTO/Lecture_Subject_ProfessorDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DTO/Lecture_Subject_ProfessorDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DTO/ProfessorDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DTO/ProfessorDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DTO/StudentDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DTO/StudentDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sqlmapper/course.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/sqlmapper/course.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +128,9 @@
       <workItem from="1637557552157" duration="70000" />
       <workItem from="1637557677127" duration="104000" />
       <workItem from="1637673078370" duration="6545000" />
-      <workItem from="1637754149234" duration="6674000" />
+      <workItem from="1637754149234" duration="6849000" />
+      <workItem from="1637829694673" duration="3513000" />
+      <workItem from="1637838412840" duration="29000" />
     </task>
     <servers />
   </component>
@@ -155,6 +147,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
