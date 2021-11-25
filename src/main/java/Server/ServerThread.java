@@ -575,8 +575,24 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
+                case Protocol.CS_REQ_LECTURE_DELETE://교과목 삭제 요청 TODO:메소드 부족
+                {
+                    String key = packet[Protocol.PT_LECTURE_KEY_POS];
+                    //10.LectureDAO에서 과목코드로 delete하는것 필요 근데 Subject까지 지우는것이 아니라 Lecture만 지워야함
+                    LectureDAO lectureDAO = new LectureDAO(sqlSessionFactory);
 
+                    //lectureDAO.delete(key);
 
+                    packet = new String[1];
+                    packet[0] = "14";
+
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+                    break;
+
+                }
+
+                
 
                 /*
 
