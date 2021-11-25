@@ -5,6 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9346d34b-57eb-45c5-8a5e-be2077ca8e3b" name="Changes" comment="">
+<<<<<<< HEAD
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/StudentDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/StudentDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/UserDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DTO/ProfessorDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DTO/ProfessorDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DTO/StudentDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DTO/StudentDTO.java" afterDir="false" />
+=======
       <change afterPath="$PROJECT_DIR$/.idea/FusionProject.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
@@ -13,6 +20,7 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/CourseRegistration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/CourseRegistration.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DAO/SubjectDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DAO/SubjectDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/persistence/DTO/CourseDetailsDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/DTO/CourseDetailsDTO.java" afterDir="false" />
+>>>>>>> 99cd1c09a18949a32f3dcb11b2ebdae0ad88f0fa
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,7 +139,9 @@
       <workItem from="1637557552157" duration="70000" />
       <workItem from="1637557677127" duration="104000" />
       <workItem from="1637673078370" duration="6545000" />
-      <workItem from="1637754149234" duration="6674000" />
+      <workItem from="1637754149234" duration="6849000" />
+      <workItem from="1637829694673" duration="3513000" />
+      <workItem from="1637838412840" duration="29000" />
     </task>
     <servers />
   </component>

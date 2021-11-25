@@ -20,13 +20,14 @@ public class StudentDAO extends UserDAO{
         List<StudentDTO> list = super.selectAllStudent();
 
         for(StudentDTO dto: list){
-            String p_code = dto.getStudent_code();
-            if(p_code == student_code){
+            String s_code = dto.getStudent_code();
+            if(s_code == student_code){
                 return dto;
             }
         }
         return null;
     }
+
 
     public void updateName(String student_code,String newName){
 

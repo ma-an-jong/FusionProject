@@ -15,14 +15,17 @@ public class StudentDTO extends UserDTO{
     private int grade;
     private String phone;
 
-
-    public String getInfo()
+    //2.학생정보 담을거 student_code,sname,department,grade,phone 만 정리
+    public String getStudentInfo()
     {
         return "[학생] 이름:" + sname +" 학번:" + student_code +" 학과: " + department+ " 연락처: " + phone + "학년: " + grade;
     }
-    //2.학생정보 담을거 student_code,sname,department,grade,phone 만 정리
-    //3.관리자가 교수랑 학생정보를 조회할때 이쁘게 출력할 정보들
 
+    //3.관리자가 교수랑 학생정보를 조회할때 이쁘게 출력할 정보들
+    public String getStudentInfoForAdmin()
+    {
+      return "["+ sname +" 학생 정보]\n 이름: " + sname + " \n 학번: " + student_code + "\n 학과: " + department + "\n 학년: " + grade + "\n 연락처: " + phone;
+    }
 
 
 }
