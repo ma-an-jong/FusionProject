@@ -73,4 +73,6 @@ public class SubjectDAO {
         }
 
     }
+
+    // 8.SubjectDAO에 과목코드로 교과목 삭제하는 기능 -->> xml 기반이라서 resources.sqlmapper.subjectxml에도 추가
 }

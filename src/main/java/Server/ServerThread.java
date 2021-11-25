@@ -5,12 +5,14 @@ import persistence.DTO.*;
 import persistence.DAO.*;
 import persistence.MyBatisConnectionFactory;
 import Client.*;
+import persistence.PooledDataSource;
 
 import java.io.*;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ServerThread extends Thread {
@@ -456,8 +458,133 @@ public class ServerThread extends Thread {
                     break;
 
                 }
+                case Protocol.CS_REQ_OPENSUBINFO_VIEW: //개설 교과목 정보 조회 요청 TODO:메소드 부족
+                {
+                    String key = packet[Protocol.PT_OPENSUBINFO_KEY_POS];
+                    //5.CourseRegistration -> selectCourseByIdx 를 과목코드로 조회하는 기능 만들기
+                    // lecture랑 subject JOIN해서 만들어야함
+                    CourseRegistration dao = new CourseRegistration(sqlSessionFactory);
+                    CourseDetailsDTO dto = dao.selectCourseByIdx(key);
+                    packet = new String[2];
+                    packet[0] = "2";
+
+                    //6.CouserDetailDTO에서 개설 교과목 정보 요청할때 출력해줄 메소드
+                    packet[1] = dto.toString();
+                    protocol = new Protocol(Protocol.SC_RES_OPENSUBINFO_VIEW);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+                    System.out.println("개설 교과목 정보 조회 성공");
+                    break;
+                }
+                case Protocol.CS_REQ_SUBJECT_ENROLL: //교과목  >> 관리자가 생성 TODO: 메소드 부족 + 데이터부족 + 데이터포멧
+                {
+                    SubjectDAO subjectDAO = new SubjectDAO(sqlSessionFactory);
+                    HashMap<String,Object> map = new HashMap<String,Object>();
+                    String key = packet[Protocol.PT_OPENSUBINFO_KEY_POS];
+                    //#{subject_code},#{name},#{grade} 과목이름, 과목코드, , 학점
+                    map.put("subject_code",packet[Protocol.PT_OPENSUBINFO_KEY_POS]);
+                    map.put("name",packet[Protocol.PT_OPENSUBINFO_NAME_POS]);
+                    map.put("grade",packet[Protocol.PT_OPENSUBINFO_GRADE_POS]);
+                    subjectDAO.insertSubject(map);
+
+                    packet = new String[1];
+                    packet[0] = "10";
+                    protocol = new Protocol(Protocol.SC_RES_SUBJECT_ENROLL);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+                    break;
+                }
+
+                case Protocol.CS_REQ_SUBJECT_UPDATE: //교과목 수정 요청인데 데이터가 없음 TODO:  무결성 문제  + 메소드 부족 -> 데이터부족
+                //7. 교과목 수정 요청 에서 SUBJECTDAO에 각각 정보 업데이트하는 메소드
+                {
+                    SubjectDAO subjectDAO = new SubjectDAO(sqlSessionFactory);
+                    HashMap<String,String> map = new HashMap<String , String>();
+
+                    //#{new_name}
+                    //#{old_name}
+
+                    map.put("new_name",packet[Protocol.PT_Subject_NEW_NAME_POS]);
+                    map.put("old_name",packet[Protocol.PT_Subject_OLD_NAME_POS]);
+
+                    subjectDAO.updateSubjectName(map);
+
+                    packet = new String[1];
+                    packet[0] = "12";
+
+                    protocol = new Protocol(Protocol.SC_RES_SUBJECT_UPDATE);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+
+                    break;
+                }
+                
+                case Protocol.CS_REQ_SUBJECT_DELETE: // 8.SubjectDAO에 과목코드로 교과목 삭제하는 기능 TODO:메소드 부족
+                {
+                    SubjectDAO subjectDAO = new SubjectDAO(sqlSessionFactory);
+                    String key = packet[Protocol.PT_Subject_KEY_POS];
+                    // 8.SubjectDAO에 과목코드로 교과목 삭제하는 기능
+                    //subjectDAO.deleteByCode(key);
+
+                    packet = new String[1];
+                    packet[0] = "14";
+                    protocol = new Protocol(Protocol.SC_RES_SUBJECT_DELETE);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+                    break;
+
+                }
+                //TODO: 개설교과목 응답코드 추가 필요
+                case Protocol.CS_REQ_LECTURE_ENROLL: //TODO: 개설 교과목 등록 데이터부족 메소드 부족
+                {
+                    //9.SUBJECTDAO에 과목코드를 입력하면 그에 해당하는 subject_idx 를 리턴하는 메소드
+                    //9-1.PROFESSORDAO에 교번을 입력하면 그에 해당하는 professor_idx를 리턴하는 메소드
+
+                    //#{lecture_idx},#{lecture_professor_idx},#{lecture_time},#{maximum},#{current},#{classroom}
+                    // idx , professor_idx ,담당교수 교번, 강의시간, 최대 강의인원,현재 강의인원,강의실
+                    LectureDAO lectureDAO = new LectureDAO(sqlSessionFactory);
+                    //String key = packet[1];
+                    // TODO:데이터 부족
+                    LectureDTO lectureDTO = new LectureDTO();
+                    lectureDAO.inserSubject(lectureDTO);
+
+                    packet = new String[1];
+                    packet[0] = "12"; //TODO:응답코드 재확인 필요
+                    protocol = new Protocol(Protocol.SC_RES_LECTURE_ENROLL);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+                    break;
+
+                } 
+                case Protocol.CS_REQ_LECTURE_UPDATE: //TODO: 업데이트하는거 추가적으로 데이터 + 메소드 필요
+                {
+                    LectureDAO lectureDAO = new LectureDAO(sqlSessionFactory);
+                    //10.LectureDAO에서 idx기준 업데이트를 과목코드 기준 업데이트로 바꾸기
+                    String key = packet[Protocol.PT_LECTURE_KEY_POS];
+                   // lectureDAO.updateSubjectByClassRoom(); // 교실 변경
+                   // lectureDAO.updateSubjectByMaximum(); //최대 수강인원 갱신
 
 
+
+
+
+                    packet = new String[1];
+                    packet[0] = "14";
+                    protocol = new Protocol(Protocol.SC_RES_LECTURE_UPDATE);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+                    break;
+                }
+
+
+
+                /*
+
+                 */
+
+
+                default:
+                    throw new IllegalStateException("Unexpected value: " + packetType);
             }
         }
 
