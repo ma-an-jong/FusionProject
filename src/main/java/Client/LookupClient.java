@@ -77,6 +77,15 @@ public class LookupClient {
     //교수
     //담당교과목 강의계획서 조회(보류)
 
+    //담당교과목 목록 조회
+    public String[] teachingSubject(String id) {
+        String sub[] = new String[2];
+        sub[0] = Protocol.CS_REQ_TEACHING_VIEW;
+        sub[1] = id;
+
+        return sub;
+    }
+
     //담당교과목 시간표 조회
     public String[] teachingTable(String id) {
         String teachTable[] = new String[2];
