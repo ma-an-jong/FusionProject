@@ -20,10 +20,79 @@ public class Protocol {
     public static final String splitter ="!@#%!@#%";
     public static final String PT_UNDEFINED = "undefined";
 
-    public static final int PT_UNDEFINED_LENGTH = 1; //미정의 배열 크기
-    public static final int PT_REQ_LOGIN_LENGTH =  3; //로그인 요청 배열 크기
     public static final int PT_LOGIN_RESULT_LENGTH =  2;  //로그인 요청 응답 배열 크기
     public static final int PT_EXIT_LENGTH = 1; //종료 배열 크기
+    public static final int PT_CLIENT_KEY = 1; //본인의 정보 조회 요청할때 키를 담아둘 자리
+
+    //로그인 정보 위치
+    public static final int PT_REQ_LOGIN_LENGTH =  3; //로그인 요청 배열 크기
+    public static final int PT_LOGIN_CODE_POS = 0; //로그인 응답 코드 위치
+    public static final int PT_LOGIN_ID_POS = 1; //로그인 아이디 위치
+    public static final int PT_LOGIN_PASSWORD_POS = 2; //로그인 아이디 위치
+
+    //학생 개인정보 조회 위치
+    public static final int PT_PERSONALINFO_CATEGORY_POS = 2;
+    public static final int PT_PERSONALINFO_KEY_POS = 1;
+
+    //학생 개인정보 수정 위치
+    public static final int PT_PERSONALINFO_NAME_POS = 2;
+    public static final int PT_PERSONALINFO_DEPARTMENT_POS = 3;
+    public static final int PT_PERSONALINFO_PHONE_POS = 4;
+    public static final int PT_PERSONALINFO_GRADE_POS = 5;
+
+    //학생 수강신청 관련 우치
+    public static final int PT_MYSUBJECT_SUBJECT_CODE_POS = 1;
+    public static final int PT_MYSUBJECT_STUDENT_CODE_POS = 2;
+
+
+    //학생 본인 시간표 조회 요청 위치
+    public static final int PT_TIMETABLE_KEY_POS = 1;
+
+    //개설 교과목 목록 조회
+    //딱히 필요한 정보 없음
+
+    //교수담당과목 조회 관련 위치
+    public static final int PT_TEACHING_KEY_POS = 1;
+
+    //담당교과목 수강신청 학생 목록 조회 요청 위치
+    public static final int PT_MYSTUDENT_KEY_POS = 1;
+    public static final int PT_MYSTUDENT_PAGENUM_POS = 2;
+
+    //교수,학생 정보 조회 요청
+    //은 딱히 없음
+
+    //사용자 계정 등록 요청
+    public static final int PT_MEMBER_ENROLL_KEY_POS = 1;
+    public static final int PT_MEMBER_ENROLL_NAME_POS = 2;
+    public static final int PT_MEMBER_ENROLL_PASSWORD_POS = 3;
+
+    //개설 교과목 정보
+    public static final int PT_OPENSUBINFO_KEY_POS = 1; //개설 교과목 코드 위치
+    public static final int PT_OPENSUBINFO_NAME_POS = 2; // 이름위치
+    public static final int PT_OPENSUBINFO_PNAME_POS = 3; // 교수 이름위치
+    public static final int PT_OPENSUBINFO_GRADE_POS = 4; // 학점위치
+    public static final int PT_OPENSUBINFO_LECTURE_TIME_POS = 5; // 강의시간
+
+    //관리자가 교과목 수정
+    public static final int PT_Subject_OLD_NAME_POS = 1; //old name 위치
+    public static final int PT_Subject_NEW_NAME_POS = 2; //new name 위치
+
+    //관리자가 교과목 삭제
+    public static final int PT_Subject_KEY_POS = 1;
+
+
+    //관리자가 //교과목 수정 요청
+    public static final int PT_LECTURE_KEY_POS= 1;
+    public static final int PT_LECTURE_CLASSROOM_POS= 2;
+    public static final int PT_LECTURE_MAXIMUM_POS= 3;
+
+    //수강신청 기간 등록 요청
+    public static final int PT_REGISTRATIONPERIOD_GRADE_POS = 1;
+    public static final int PT_REGISTRATIONPERIOD_START_POS = 2;
+    public static final int PT_REGISTRATIONPERIOD_END_POS = 3;
+
+
+
 
     //프로토콜 타입
     public static final String PT_EXIT = "0"; //프로그램 종료
@@ -44,14 +113,17 @@ public class Protocol {
     //수강과목 등록,수정,삭제
     public static final String CS_REQ_REGISTRATION = "9-0"; //수강 신청 요청
     public static final String SC_RES_REGISTRATION = "A-2"; //수강 신청 요청 응답
+
     public static final String CS_REQ_MYSUBJECT_ENROLL = "9-1"; //수강 과목 등록 요청
     public static final String SC_RES_MYSUBJECT_ENROLL = "A-4"; //수강 과목 등록 요청 응답
-    public static final String CS_REQ_CORRECTION = "B-4"; //수강 정정 요청
-    public static final String SC_RES_CORRECTION = "C-A"; //수강 정정 요청 응답
+
+    public static final String CS_REQ_MYSUBJECT_MODIFY = "B-4"; //수강 정정 요청
+    public static final String SC_RES_MYSUBJECT_MODIFY = "C-6"; //수강 정정 응답
+
     public static final String CS_REQ_MYSUBJECT_VIEW = "7-9"; //수강 과목 조회 요청
     public static final String SC_RES_MYSUBJECT_VIEW = "8-10"; //수강 과목 조회 요청 응답
-    public static final String CS_REQ_MYSUBJECT_DELETE = "B-2"; //수강 과목 삭제 요청
-    public static final String SC_RES_MYSUBJECT_DELETE = "C-8"; //수강 과목 삭제 요청 응답
+    public static final String CS_REQ_MYSUBJECT_DELETE = "B-5"; //수강 과목 삭제 요청
+    public static final String SC_RES_MYSUBJECT_DELETE = "C-4"; //수강 과목 삭제 요청 응답
 
     //개인정보 및 비밀번호 조회 및 수정
     public static final String CS_REQ_PERSONALINFO_VIEW = "7-A"; //개인정보 조회 요청
@@ -106,6 +178,10 @@ public class Protocol {
     public static final String CS_REQ_SUBJECT_VIEW = "7-1"; //전체 교과목 정보 조회 요청
     public static final String SC_RES_SUBJECT_VIEW = "8-2"; //전체 교과목 정보 조회 요청 응답
 
+    //개설 교과목 정보조회
+    public static final String CS_REQ_OPENSUBINFO_VIEW = "7-1"; //개설 교과목 정보 조회 요청
+    public static final String SC_RES_OPENSUBINFO_VIEW = "8-2"; //개설 교과목 정보 조회 요청 응답
+
     //교과목 생성,수정,삭제
     public static final String CS_REQ_SUBJECT_ENROLL = "9-4"; //교과목 등록 요청
     public static final String SC_RES_SUBJECT_ENROLL = "A-8"; //교과목 등록 요청 응답
@@ -135,7 +211,7 @@ public class Protocol {
     public void setPacket (String[] stringValue)
     {
        int size = stringValue.length;
-       packet += protocolType + "\n";
+       packet += protocolType + splitter;
 
        for(int i=0 ; i<size ; i++) {
            if(i == size-1) packet += stringValue[i];
