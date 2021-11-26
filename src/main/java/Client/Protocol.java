@@ -20,19 +20,13 @@ public class Protocol {
     public static final String splitter ="!@#%!@#%";
     public static final String PT_UNDEFINED = "undefined";
 
-    public static final int PT_LOGIN_RESULT_LENGTH =  2;  //로그인 요청 응답 배열 크기
-    public static final int PT_EXIT_LENGTH = 1; //종료 배열 크기
-    public static final int PT_CLIENT_KEY = 1; //본인의 정보 조회 요청할때 키를 담아둘 자리
 
     //로그인 정보 위치
-    public static final int PT_REQ_LOGIN_LENGTH =  3; //로그인 요청 배열 크기
-    public static final int PT_LOGIN_CODE_POS = 0; //로그인 응답 코드 위치
     public static final int PT_LOGIN_ID_POS = 1; //로그인 아이디 위치
-    public static final int PT_LOGIN_PASSWORD_POS = 2; //로그인 아이디 위치
-
-    //학생 개인정보 조회 위치
-    public static final int PT_PERSONALINFO_CATEGORY_POS = 2;
-    public static final int PT_PERSONALINFO_KEY_POS = 1;
+    public static final int PT_LOGIN_PASSWORD_POS = 2; //로그인 비밀번호 위치
+    public static final int PT_LOGIN_KEY_POS = 1;  //로그인 응답 학번/교번 위치
+    public static final int PT_LOGIN_GRADE_POS = 2; //로그인 응답 학년 위치
+    public static final int PT_LOGIN_CATEGORY_POS = 3; //로그인 응답 카테고리 위치
 
     //학생 개인정보 수정 위치
     public static final int PT_PERSONALINFO_NAME_POS = 2;
@@ -41,8 +35,14 @@ public class Protocol {
     public static final int PT_PERSONALINFO_GRADE_POS = 5;
 
     //학생 수강신청 관련 우치
-    public static final int PT_MYSUBJECT_SUBJECT_CODE_POS = 1;
-    public static final int PT_MYSUBJECT_STUDENT_CODE_POS = 2;
+    public static final int PT_MYSUBJECT_STUDENT_CODE_POS = 1;
+    public static final int PT_MYSUBJECT_SUBJECT_CODE_POS = 2;
+
+    //학생 개인정보 조회 위치
+    public static final int PT_PERSONALINFO_CATEGORY_POS = 2;
+    public static final int PT_PERSONALINFO_KEY_POS = 1;
+
+    //학생 수강 과목 조회 요청
 
 
     //학생 본인 시간표 조회 요청 위치
@@ -90,6 +90,9 @@ public class Protocol {
     public static final int PT_REGISTRATIONPERIOD_GRADE_POS = 1;
     public static final int PT_REGISTRATIONPERIOD_START_POS = 2;
     public static final int PT_REGISTRATIONPERIOD_END_POS = 3;
+
+
+
 
 
 

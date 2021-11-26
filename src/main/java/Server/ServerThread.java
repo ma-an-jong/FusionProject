@@ -1,18 +1,15 @@
 package Server;
 
+import Client.Protocol;
 import org.apache.ibatis.session.SqlSessionFactory;
-import persistence.DTO.*;
 import persistence.DAO.*;
+import persistence.DTO.*;
 import persistence.MyBatisConnectionFactory;
-import Client.*;
-import persistence.PooledDataSource;
 
 import java.io.*;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,8 +40,6 @@ public class ServerThread extends Thread {
         {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-
-
         }
         catch(IOException e)
         {
@@ -52,8 +47,6 @@ public class ServerThread extends Thread {
             System.out.println("SocketBuffer 가져오기 실패");
         }
 
-
-        
         boolean flag = true;
 
         //초기 프로토콜상태 무시
@@ -87,7 +80,7 @@ public class ServerThread extends Thread {
                     System.out.println("서버종료");
                     break;
                 }
-                case Protocol.PT_REQ_LOGIN: //TODO : 1번 - 2번
+                case Protocol.PT_REQ_LOGIN: //TODO: 학년 학번 보내주기 + 교번 + 카테고리 메소드 부족
                 {
                     System.out.println("클라이언트가 로그인 정보를 보냈습니다.");
 
@@ -96,7 +89,8 @@ public class ServerThread extends Thread {
 
                     UserDAO userDAO = new UserDAO(jdbcConn);
                     List<UserDTO> userList = userDAO.selectAllUser();
-//TODO: 학년 학번 보내주기 + 교번 + 카테고리
+
+
                     for(UserDTO dto : userList)
                     {
                         if(dto.getId() == id && dto.getPassword() == password )
@@ -104,27 +98,43 @@ public class ServerThread extends Thread {
                             if(dto.getCategory() == 'a')
                             {
                                 protocol = new Protocol(Protocol.PT_LOGIN_RESULT);
-                                packet = new String[Protocol.PT_LOGIN_RESULT_LENGTH];
-                                packet[Protocol.PT_LOGIN_CODE_POS] = "2";
+                                packet = new String[4];
+                                packet[0] = "2";
                                 protocol.setPacket(packet);
                                 writePacket(protocol.getPacket());
                                 System.out.println("관리자 인증 성공");
                             }
                             else if(dto.getCategory() == 's')
                             {
+                                StudentDAO studentDAO = new StudentDAO(jdbcConn);
+                                StudentDTO studentDTO = studentDAO.searchByStudent_code();
+
+                                packet = new String[4];
+                                packet[0] = "0";
+                                packet[Protocol.PT_LOGIN_KEY_POS] = studentDTO.getStudent_code();
+                                packet[Protocol.PT_LOGIN_GRADE_POS] = String.valueOf(studentDTO.getGrade());
+                                packet[Protocol.PT_LOGIN_CATEGORY_POS] ="s";
+
                                 protocol = new Protocol(Protocol.PT_LOGIN_RESULT);
-                                packet = new String[Protocol.PT_LOGIN_RESULT_LENGTH];
-                                packet[Protocol.PT_LOGIN_CODE_POS] = "0";
                                 protocol.setPacket(packet);
                                 writePacket(protocol.getPacket());
+                                System.out.println("학생 인증 성공");
+                                break;
                             }
                             else if(dto.getCategory() == 'p') {
+                                ProfessorDAO professorDAO = new ProfessorDAO(jdbcConn);
+                                ProfessorDTO professorDTO = professorDAO.searchByProfessor_code();
+
+                                packet = new String[4];
+                                packet[0] = "1";
+                                packet[Protocol.PT_LOGIN_KEY_POS] = professorDTO.getProfessor_code();
+                                packet[Protocol.PT_LOGIN_CATEGORY_POS] ="p";
+
                                 protocol = new Protocol(Protocol.PT_LOGIN_RESULT);
-                                packet = new String[Protocol.PT_LOGIN_RESULT_LENGTH];
-                                packet[Protocol.PT_LOGIN_CODE_POS] = "1";
                                 protocol.setPacket(packet);
                                 writePacket(protocol.getPacket());
                                 System.out.println("교수 인증 성공");
+                                break;
                             }
                             else
                             {
@@ -133,31 +143,23 @@ public class ServerThread extends Thread {
                             System.out.println("로그인 성공");
                             break;
                         }
-
                     }
-
-                    protocol = new Protocol(Protocol.PT_LOGIN_RESULT);
-                    packet = new String[Protocol.PT_LOGIN_RESULT_LENGTH];
-                    packet[Protocol.PT_LOGIN_CODE_POS] = "3";
-                    protocol.setPacket(packet);
-                    writePacket(protocol.getPacket());
                     System.out.println("일치하는 id/password가 없습니다");
                     break;
                 }
-                case Protocol.CS_REQ_REGISTRATION: //TODO: 마지막에
+                case Protocol.CS_REQ_REGISTRATION: //TODO: 할수있는데 왜 안했을까??? 마지막에
                 {
                     break;
                 }
                 
-                //TODO: 인증토큰 만들기
+                                                 //TODO: 인증토큰 만들기
 
-                case Protocol.CS_REQ_MYSUBJECT_ENROLL: //TODO: 데이터 수정 + 메소드 부족
+                case Protocol.CS_REQ_MYSUBJECT_ENROLL: //TODO:메소드 부족
                 {
                     CourseRegistration dao = new CourseRegistration(sqlSessionFactory);
                     StudentDAO studentDAO = new StudentDAO(jdbcConn);
                     LectureDAO lectureDAO = new LectureDAO(sqlSessionFactory);
 
-                    //학번, 과목코드
                     String subjectCode = packet[Protocol.PT_MYSUBJECT_SUBJECT_CODE_POS];
                     String studentCode = packet[Protocol.PT_MYSUBJECT_STUDENT_CODE_POS];
 
@@ -185,20 +187,23 @@ public class ServerThread extends Thread {
                     break;
                 }
 
-                case Protocol.CS_REQ_MYSUBJECT_VIEW: //내 수강 목록 조회
+                case Protocol.CS_REQ_MYSUBJECT_VIEW: //내 수강 목록 조회 TODO: 메소드 부족
                 {
                     //클라이언트가 학번을 통해서 정보 조회하여 전달
                     System.out.println("클라이언트가 본인의 정보 요청");
 
                     try {
+                        //수강신청 DAO생성
                         CourseRegistration dao = new CourseRegistration(sqlSessionFactory);
-
-                        String key = packet[Protocol.PT_CLIENT_KEY];
+                        String key = packet[Protocol.PT_MYSUBJECT_STUDENT_CODE_POS];
                         List<CourseDetailsDTO> list = dao.selectMyCourse(key);
+                        
                         packet = new String[list.size() + 1];
                         packet[0] = "10";
                         int index = 1;
+                        
                         for (CourseDetailsDTO dto : list) {
+                            //CourseDetailsDTO에 이쁘게 출력하는 메소드
                             packet[index] = dto.toString();
                             index++;
                         }
@@ -220,7 +225,8 @@ public class ServerThread extends Thread {
 
                     break;
                 }
-                case Protocol.CS_REQ_MYSUBJECT_DELETE: //TODO: 데이터 수정 + 메소드 부족
+                case Protocol.CS_REQ_MYSUBJECT_DELETE: //학생 수강삭제
+                    //TODO:메소드 부족
                 {
                     String subjectCode = packet[Protocol.PT_MYSUBJECT_SUBJECT_CODE_POS];
                     String studentCode = packet[Protocol.PT_MYSUBJECT_STUDENT_CODE_POS];
@@ -240,11 +246,7 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
 
                     break;
-
-
-
                 }
-                //TODO:학생 개인정보 요청 본인의 카테고리까지 전송하는걸로
                 case Protocol.CS_REQ_PERSONALINFO_VIEW:
                 {
                     char category = packet[Protocol.PT_PERSONALINFO_CATEGORY_POS].charAt(0);
@@ -308,7 +310,7 @@ public class ServerThread extends Thread {
                     break;
 
                 }
-                //TODO:개인정보 수정 요청하면 데이터전송 어떤거 하는지?? 클라이언트쪽에서 먼저 정해주기
+                //TODO: 메소드 부족
                 case Protocol.CS_REQ_PERSONALINFO_UPDATE:
                 {
                     String key = packet[Protocol.PT_PERSONALINFO_KEY_POS];
@@ -322,7 +324,19 @@ public class ServerThread extends Thread {
                     String code;
                     try
                     { //업데이트 할거 추가
-                        dao.updateName(key,name);
+
+                        if(!name.equals(null)){
+                            dao.updateName(key,name);
+                        }
+                        if(!dept.equals(null)){
+
+                        }
+                        if(!phone.equals(null)){
+
+                        }
+                        if(grade != 0){
+
+                        }
                         code = "0";
                         protocol = new Protocol(Protocol.SC_RES_PERSONALINFO_UPDATE);
                     }
@@ -338,15 +352,19 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_TIMETABLE_VIEW: //TODO:일렬로 출력 그러나 같은과목 날짜분리
+                case Protocol.CS_REQ_TIMETABLE_VIEW: //TODO:일렬로 출력 같은과목 날짜분리 + 정렬
                 {
+                    //강의 시간 포멧은 금34/목67 등
                     CourseRegistration dao = new CourseRegistration(sqlSessionFactory);
 
                     String key = packet[Protocol.PT_TIMETABLE_KEY_POS];
                     List<CourseDetailsDTO> list = dao.selectMyCourse(key);
+                    List<TimeTableInfo> timeTable = new LinkedListnkedList<TimeTableInfo>();
+
                     packet = new String[list.size() + 1];
                     packet[0] = "10";
                     int index = 1;
+
                     for (CourseDetailsDTO dto : list) {
                         packet[index] = dto.toString();
                         index++;
