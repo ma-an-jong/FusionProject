@@ -14,13 +14,26 @@ public class ProfessorDAO extends UserDAO {
         super(conn);
     }
 
-    public ProfessorDTO searchByProfessor_code(String professor_code ){
+    public ProfessorDTO searchByProfessor_idx(int professor_idx) {
 
         List<ProfessorDTO> list = super.selectAllProfessor();
 
-        for(ProfessorDTO dto: list){
+        for (ProfessorDTO dto : list) {
+            int p_idx = dto.getProfessor_idx();
+            if (p_idx == professor_idx) {
+                return dto;
+            }
+        }
+        return null;
+    }
+
+    public ProfessorDTO searchByProfessor_code(String professor_code ) {
+
+        List<ProfessorDTO> list = super.selectAllProfessor();
+
+        for (ProfessorDTO dto : list) {
             String p_code = dto.getProfessor_code();
-            if(p_code == professor_code){
+            if (p_code == professor_code) {
                 return dto;
             }
         }
