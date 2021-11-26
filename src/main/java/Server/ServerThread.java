@@ -359,7 +359,7 @@ public class ServerThread extends Thread {
 
                     String key = packet[Protocol.PT_TIMETABLE_KEY_POS];
                     List<CourseDetailsDTO> list = dao.selectMyCourse(key);
-                    List<TimeTableInfo> timeTable = new LinkedListnkedList<TimeTableInfo>();
+                    List<TimeTableInfo> timeTable = new LinkedList<TimeTableInfo>();
 
                     packet = new String[list.size() + 1];
                     packet[0] = "10";
