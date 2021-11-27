@@ -21,7 +21,7 @@ public class TimeTableInfo implements Comparable<TimeTableInfo> {
     String lectureTime;
     String classRoom;
 
-<<<<<<< HEAD
+
     public TimeTableInfo(String name,String lectureTime,String classRoom){
         this.name = name;
         this.lectureTime = lectureTime;
@@ -29,9 +29,6 @@ public class TimeTableInfo implements Comparable<TimeTableInfo> {
     }
 
 
-
-=======
->>>>>>> 67a764d6cc944926fc682efc7cb2d57888a183dc
     @Override
     public int compareTo(TimeTableInfo o) {
         if(this.lectureTime.charAt(0) == o.lectureTime.charAt(0))
@@ -48,19 +45,9 @@ public class TimeTableInfo implements Comparable<TimeTableInfo> {
 
     }
 
-<<<<<<< HEAD
     public String toString(){
         return name +"\n" + lectureTime +"\n" + classRoom+"\n";
     }
 
-
-
-
-
 }
-=======
 
-
-
-}
->>>>>>> 67a764d6cc944926fc682efc7cb2d57888a183dc

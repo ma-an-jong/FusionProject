@@ -106,12 +106,6 @@ public class Protocol {
     public static final int PT_REGISTRATIONPERIOD_START_POS = 2;
     public static final int PT_REGISTRATIONPERIOD_END_POS = 3;
 
-
-
-
-
-
-
     //프로토콜 타입
     public static final String PT_EXIT = "0"; //프로그램 종료
     public static final String PT_REQ_LOGIN = "1"; //로그인 요청
@@ -127,7 +121,7 @@ public class Protocol {
     public static final String PT_REQ_REVISE = "B"; //정정 요청
     public static final String PT_RES_REVISE = "C"; //정정 요청 응답
 
-
+    //학생
     //수강과목 등록,수정,삭제
     public static final String CS_REQ_REGISTRATION = "9-0"; //수강 신청 요청
     public static final String SC_RES_REGISTRATION = "A-2"; //수강 신청 요청 응답
@@ -146,7 +140,6 @@ public class Protocol {
     public static final String CS_REQ_PERSONALINFO_UPDATE = "B-3"; //개인정보 수정 요청
     public static final String SC_RES_PERSONALINFO_UPDATE = "C-0"; //개인정보 수정 요청 응답
 
-    //학생
     //본인 시간표 조회
     public static final String CS_REQ_TIMETABLE_VIEW = "7-8"; //본인 시간표 조회 요청
     public static final String SC_RES_TIMETABLE_VIEW = "8-10"; //본인 시간표 조회 요청 응답
@@ -181,7 +174,7 @@ public class Protocol {
     //관리자
 
     //교수 정보 조회 TODO:값이 똑같음
-    public static final String CS_REQ_PROFESSOR_VIEW = "7-1"; //교수 정보 조회 요청
+    public static final String CS_REQ_PROFESSOR_VIEW = "7-11"; //교수 정보 조회 요청
     public static final String SC_RES_PROFESSOR_VIEW = "8-0"; //교수 정보 조회 요청 응답
     //학생 정보 조회
     public static final String CS_REQ_STUDENT_VIEW = "7-1"; //학생 정보 조회 요청
@@ -192,7 +185,7 @@ public class Protocol {
     public static final String SC_RES_ALLMEMBER_VIEW = "8-16"; //모든 교수, 학생 정보 조회 요청 응답
 
     //교수 계정 생성
-    public static final String CS_REQ_PROFESSOR_ENROLL = "9-3"; //교수 계정 등록 요청
+    public static final String CS_REQ_PROFESSOR_ENROLL = "9-13"; //교수 계정 등록 요청
     public static final String SC_RES_PROFESSOR_ENROLL = "A-6"; //교수 계정 등록 요청에 대한 응답
     //학생 계정 생성
     public static final String CS_REQ_STUDENT_ENROLL = "9-3"; //학생 계정 등록 요청
@@ -211,13 +204,13 @@ public class Protocol {
     public static final String SC_RES_SUBJECT_ENROLL = "A-8"; //교과목 등록 요청 응답
     public static final String CS_REQ_SUBJECT_UPDATE = "B-2"; //교과목 수정 요청
     public static final String SC_RES_SUBJECT_UPDATE = "C-8"; //교과목 수정 요청 응답
-    public static final String CS_REQ_SUBJECT_DELETE = "B-3"; //교과목 삭제 요청
+    public static final String CS_REQ_SUBJECT_DELETE = "B-13"; //교과목 삭제 요청
     public static final String SC_RES_SUBJECT_DELETE = "C-A"; //교과목 삭제 요청 응답
 
     //개설 교과목 생성, 수정, 삭제
     public static final String CS_REQ_LECTURE_ENROLL = "9-7"; //개설교과목 등록 요청
     public static final String SC_RES_LECTURE_ENROLL = "A-E"; //개설교과목 등록 요청 응답
-    public static final String CS_REQ_LECTURE_UPDATE = "B-5"; //개설교과목 수정 요청
+    public static final String CS_REQ_LECTURE_UPDATE = "B-15"; //개설교과목 수정 요청
     public static final String SC_RES_LECTURE_UPDATE = "C-C"; //개설교과목 수정 요청 응답
     public static final String CS_REQ_LECTURE_DELETE = "B-6"; //개설교과목 삭제 요청
     public static final String SC_RES_LECTURE_DELETE = "C-E"; //개설교과목 삭제 요청 응답

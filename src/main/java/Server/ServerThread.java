@@ -182,7 +182,7 @@ public class ServerThread extends Thread {
                     break;
                 }
 
-                case Protocol.CS_REQ_MYSUBJECT_ENROLL: //TODO:메소드 부족
+                case Protocol.CS_REQ_MYSUBJECT_ENROLL: //교과목 등록
                 {
                     CourseRegistration dao = new CourseRegistration(sqlSessionFactory);
                     StudentDAO studentDAO = new StudentDAO(jdbcConn);
@@ -192,13 +192,16 @@ public class ServerThread extends Thread {
                     String studentCode = packet[Protocol.PT_MYSUBJECT_STUDENT_CODE_POS];
 
                     StudentDTO studentDTO = studentDAO.searchByStudent_code(studentCode);
-                    LectureDTO lectureDTO = lectureDAO.searchBySubject_code(subjectCode);
-                    //11. LectureDAO -> searchBySubject_code(subjectCode); 과목코드로 개설 교과목 조회하는 기능
+                    LectureDTO lectureDTO = lectureDAO.searchBySubjectCode(subjectCode);
 
                     //학년 학번 강의시간  강의 idx 현재인원 최대인원
                     CourseDetailsDTO dto = new CourseDetailsDTO();
                     dto.setGrade(studentDTO.getGrade());
                     dto.setStudent_code(studentCode);
+                    dto.setLecture_time(lectureDTO.getLecture_time());
+                    dto.setLecture_idx(lectureDTO.getLecture_idx());
+                    dto.setCurrent(0);
+                    dto.setMaximum(lectureDTO.getMaximum());
 
                     dao.addCoure(dto);
 
@@ -782,6 +785,18 @@ public class ServerThread extends Thread {
                 }
                 case Protocol.CS_REQ_SYLLABUSPERIOD_ENROLL: //TODO: 1
                 {
+                    String start_date = packet[Protocol.PT_REGISTRATIONPERIOD_START_POS];
+                    String end_date = packet[Protocol.PT_REGISTRATIONPERIOD_END_POS];
+
+                    SimpleDateFormat sdf=new SimpleDateFormat(start_date);
+                    String ss=sdf.format(new java.util.Date());
+                    Date startDate= Date.valueOf(ss);
+
+                    sdf=new SimpleDateFormat(start_date);
+                    ss=sdf.format(new java.util.Date());
+                    Date endDate = Date.valueOf(ss);
+
+
                     break;
                 }
 
