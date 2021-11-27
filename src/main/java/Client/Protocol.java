@@ -20,7 +20,6 @@ public class Protocol {
     public static final String splitter ="!@#%!@#%";
     public static final String PT_UNDEFINED = "undefined";
 
-
     //로그인 정보 위치
     public static final int PT_LOGIN_ID_POS = 1; //로그인 아이디 위치
     public static final int PT_LOGIN_PASSWORD_POS = 2; //로그인 비밀번호 위치
@@ -33,6 +32,9 @@ public class Protocol {
     public static final int PT_PERSONALINFO_DEPARTMENT_POS = 3;
     public static final int PT_PERSONALINFO_PHONE_POS = 4;
     public static final int PT_PERSONALINFO_GRADE_POS = 5;
+
+    //학생 수강신청 인증 관련 위치
+    public static final int PT_REGISTRATION_GRADE_POS = 1;
 
     //학생 수강신청 관련 우치
     public static final int PT_MYSUBJECT_STUDENT_CODE_POS = 1;
@@ -66,13 +68,25 @@ public class Protocol {
     public static final int PT_MEMBER_ENROLL_KEY_POS = 1;
     public static final int PT_MEMBER_ENROLL_NAME_POS = 2;
     public static final int PT_MEMBER_ENROLL_PASSWORD_POS = 3;
+    public static final int PT_MEMBER_ENROLL_DEPT_POS = 4;
+    public static final int PT_MEMBER_ENROLL_PHONE_POS = 5;
+    public static final int PT_MEMBER_ENROLL_GRADE_POS = 6;
 
-    //개설 교과목 정보
-    public static final int PT_OPENSUBINFO_KEY_POS = 1; //개설 교과목 코드 위치
-    public static final int PT_OPENSUBINFO_NAME_POS = 2; // 이름위치
-    public static final int PT_OPENSUBINFO_PNAME_POS = 3; // 교수 이름위치
-    public static final int PT_OPENSUBINFO_GRADE_POS = 4; // 학점위치
-    public static final int PT_OPENSUBINFO_LECTURE_TIME_POS = 5; // 강의시간
+    //교과목 정보
+    public static final int PT_SUBINFO_KEY_POS = 1; //교과목 코드 위치
+    public static final int PT_SUBINFO_NAME_POS = 2; // 이름위치
+    public static final int PT_SUBINFO_GRADE_POS = 3; // 학년위치
+
+    //개설 교과목 정보 조회
+    public static final int PT_LECTUREINFO_KEY_POS = 1; //개설 교과목 코드 위치
+
+
+    //관리자가 개설 교과목 등록
+    public static final int PT_LECTURE_ENROLL_SUBJECT_KEY_POS = 1;
+    public static final int PT_LECTURE_ENROLL_PROFESSOR_KEY_POS = 2;
+    public static final int PT_LECTURE_ENROLL_LECTURE_TIME_POS = 3;
+    public static final int PT_LECTURE_ENROLL_MAXIMUM_POS = 4;
+    public static final int PT_LECTURE_ENROLL_CLASSROOM_POS = 5;
 
     //관리자가 교과목 수정
     public static final int PT_Subject_OLD_NAME_POS = 1; //old name 위치
@@ -113,7 +127,7 @@ public class Protocol {
     public static final String PT_REQ_REVISE = "B"; //정정 요청
     public static final String PT_RES_REVISE = "C"; //정정 요청 응답
 
-    //학생
+
     //수강과목 등록,수정,삭제
     public static final String CS_REQ_REGISTRATION = "9-0"; //수강 신청 요청
     public static final String SC_RES_REGISTRATION = "A-2"; //수강 신청 요청 응답
@@ -121,15 +135,12 @@ public class Protocol {
     public static final String CS_REQ_MYSUBJECT_ENROLL = "9-1"; //수강 과목 등록 요청
     public static final String SC_RES_MYSUBJECT_ENROLL = "A-4"; //수강 과목 등록 요청 응답
 
-    public static final String CS_REQ_MYSUBJECT_MODIFY = "B-4"; //수강 정정 요청
-    public static final String SC_RES_MYSUBJECT_MODIFY = "C-6"; //수강 정정 응답
-
     public static final String CS_REQ_MYSUBJECT_VIEW = "7-9"; //수강 과목 조회 요청
     public static final String SC_RES_MYSUBJECT_VIEW = "8-10"; //수강 과목 조회 요청 응답
     public static final String CS_REQ_MYSUBJECT_DELETE = "B-5"; //수강 과목 삭제 요청
     public static final String SC_RES_MYSUBJECT_DELETE = "C-4"; //수강 과목 삭제 요청 응답
 
-    //개인정보 및 비밀번호 조회 및 수정
+    //개인정보 및 비밀번호 조회 및 수정 TODO : 교수 학생 분할
     public static final String CS_REQ_PERSONALINFO_VIEW = "7-A"; //개인정보 조회 요청
     public static final String SC_RES_PERSONALINFO_VIEW = "8-14"; //개인정보 조회 요청 응답
     public static final String CS_REQ_PERSONALINFO_UPDATE = "B-3"; //개인정보 수정 요청
@@ -168,23 +179,32 @@ public class Protocol {
     public static final String SC_RES_TEACHINGTABLE_VIEW = "8-A"; //담당교과목 시간표 조회 요청 응답
 
     //관리자
-    //교수,학생 정보 조회
-    public static final String CS_REQ_MEMBER_VIEW = "7-1"; //교수,학생 정보 조회 요청
-    public static final String SC_RES_MEMBER_VIEW = "8-0"; //교수,학생 정보 조회 요청 응답
+
+    //교수 정보 조회 TODO:값이 똑같음
+    public static final String CS_REQ_PROFESSOR_VIEW = "7-1"; //교수 정보 조회 요청
+    public static final String SC_RES_PROFESSOR_VIEW = "8-0"; //교수 정보 조회 요청 응답
+    //학생 정보 조회
+    public static final String CS_REQ_STUDENT_VIEW = "7-1"; //학생 정보 조회 요청
+    public static final String SC_RES_STUDENT_VIEW = "8-0"; //학생 정보 조회 요청 응답
+
     //모든 교수,학생 정보 조회
     public static final String CS_REQ_ALLMEMBER_VIEW = "7-B"; //모든 교수,학생 정보 조회 요청
     public static final String SC_RES_ALLMEMBER_VIEW = "8-16"; //모든 교수, 학생 정보 조회 요청 응답
-    //교수, 학생 계정 생성
-    public static final String CS_REQ_MEMBER_ENROLL = "9-3"; //사용자 계정 등록 요청
-    public static final String SC_RES_MEMBER_ENROLL = "A-6"; //사용자 계정 등록 요청에 대한 응답
+
+    //교수 계정 생성
+    public static final String CS_REQ_PROFESSOR_ENROLL = "9-3"; //교수 계정 등록 요청
+    public static final String SC_RES_PROFESSOR_ENROLL = "A-6"; //교수 계정 등록 요청에 대한 응답
+    //학생 계정 생성
+    public static final String CS_REQ_STUDENT_ENROLL = "9-3"; //학생 계정 등록 요청
+    public static final String SC_RES_STUDENT_ENROLL = "A-6"; //학생 계정 등록 요청에 대한 응답
 
     //전체 교과목 정보 조회
-    public static final String CS_REQ_SUBJECT_VIEW = "7-1"; //전체 교과목 정보 조회 요청
-    public static final String SC_RES_SUBJECT_VIEW = "8-2"; //전체 교과목 정보 조회 요청 응답
+    public static final String CS_REQ_SUBJECT_VIEW = "7-E"; //전체 교과목 정보 조회 요청
+    public static final String SC_RES_SUBJECT_VIEW = "8-21"; //전체 교과목 정보 조회 요청 응답
 
-    //개설 교과목 정보조회
-    public static final String CS_REQ_OPENSUBINFO_VIEW = "7-1"; //개설 교과목 정보 조회 요청
-    public static final String SC_RES_OPENSUBINFO_VIEW = "8-2"; //개설 교과목 정보 조회 요청 응답
+    //개설교과목 정보 조회
+    public static final String CS_REQ_LECTUREINFO_VIEW = "7-D"; //개설교과목 정보 조회 요청
+    public static final String SC_RES_LECTUREINFO_VIEW = "8-19"; //개설교과목 정보 조회 요청 응답
 
     //교과목 생성,수정,삭제
     public static final String CS_REQ_SUBJECT_ENROLL = "9-4"; //교과목 등록 요청
