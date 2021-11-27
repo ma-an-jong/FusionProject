@@ -10,7 +10,10 @@ import java.io.*;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.Time;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ServerThread extends Thread {
@@ -107,7 +110,7 @@ public class ServerThread extends Thread {
                             else if(dto.getCategory() == 's')
                             {
                                 StudentDAO studentDAO = new StudentDAO(jdbcConn);
-                                StudentDTO studentDTO = studentDAO.searchByStudent_code();
+                                StudentDTO studentDTO = studentDAO.searchByStudent_idx(dto.getIdx());
 
                                 packet = new String[4];
                                 packet[0] = "0";
@@ -123,7 +126,7 @@ public class ServerThread extends Thread {
                             }
                             else if(dto.getCategory() == 'p') {
                                 ProfessorDAO professorDAO = new ProfessorDAO(jdbcConn);
-                                ProfessorDTO professorDTO = professorDAO.searchByProfessor_code();
+                                ProfessorDTO professorDTO = professorDAO.searchByProfessor_idx(dto.getIdx());
 
                                 packet = new String[4];
                                 packet[0] = "1";
@@ -361,28 +364,38 @@ public class ServerThread extends Thread {
                     List<CourseDetailsDTO> list = dao.selectMyCourse(key);
                     List<TimeTableInfo> timeTable = new LinkedList<TimeTableInfo>();
 
-                    packet = new String[list.size() + 1];
-                    packet[0] = "10";
-                    int index = 1;
-
                     for (CourseDetailsDTO dto : list) {
-                        packet[index] = dto.toString();
-                        index++;
+                        String time[] = dto.getLecture_time().split("/");
+                        String name =dto.getName();
+                        String classRoom = dto.getClassroom();
+                        for(int i = 0; i < time.length;i++){
+                            timeTable.add(new TimeTableInfo(name,time[i],classRoom));
+                        }
                     }
 
+                    Collections.sort(timeTable);
+
+                    packet = new String[timeTable.size() + 1];
+                    int index = 1;
+                    for(TimeTableInfo element : timeTable){
+                        packet[index++] = element.toString();
+                    }
+
+                    packet[0] = "10";
                     protocol = new Protocol(Protocol.SC_RES_TIMETABLE_VIEW);
                     protocol.setPacket(packet);
                     System.out.println("데이터 전송 승인");
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_LECTURE_VIEW:
+                case Protocol.CS_REQ_LECTURE_VIEW: //개설 교과목 목록 조회 TODO: 메소드 부족
                 {
                     LectureDAO dao = new LectureDAO(sqlSessionFactory);
                     List<Lecture_Subject_ProfessorDTO> list = dao.selectAll();
 
                     packet = new String[list.size() + 1];
                     int index= 1;
+                    //13.Lecture_Subject_ProfessorDTO ->  이쁘게 출력문
                     for(Lecture_Subject_ProfessorDTO dto : list){
                         packet[index]  = dto.toString();
                         index ++;
@@ -400,7 +413,6 @@ public class ServerThread extends Thread {
                 }
                 case Protocol.CS_REQ_TEACHING_VIEW: //담당 교과목 목록 조회
                 {
-
                     LectureDAO dao = new LectureDAO(sqlSessionFactory);
                     String key = packet[Protocol.PT_TEACHING_KEY_POS];
                     List<Lecture_Subject_ProfessorDTO> list = dao.selectByProfessor(key);
@@ -423,7 +435,8 @@ public class ServerThread extends Thread {
                 {
                     break;
                 }
-                case Protocol.CS_REQ_MYSTUDENT_VIEW:  //담당교과목 수강신청 학생 목록 조회 요청 TODO: 페이징 기능인데
+                case Protocol.CS_REQ_MYSTUDENT_VIEW:  //담당교과목 수강신청 학생 목록 조회 요청
+                    // TODO: 페이징 기능
                 {
                     String key = packet[Protocol.PT_MYSTUDENT_KEY_POS];
                     int pageNum = Integer.parseInt(packet[Protocol.PT_MYSTUDENT_PAGENUM_POS]);
@@ -437,16 +450,13 @@ public class ServerThread extends Thread {
                     for(StudentDTO d : list)
                     {
                         //2.학생정보 담을거 student_code,sname,department,grade,phone 만 정리
-                        packet[index++] = d.toString();
+                        packet[index++] = d.getStudentInfo();
                     }
 
                     protocol = new Protocol(Protocol.SC_RES_MYSTUDENT_VIEW);
                     protocol.setPacket(packet);
                     writePacket(protocol.getPacket());
                     break;
-
-
-
 
                 }
                 case Protocol.CS_REQ_TEACHINGTABLE_VIEW: //TODO:담당 교과목 시간표 조회  + 학생시간표 조회와 동일하게
@@ -455,39 +465,59 @@ public class ServerThread extends Thread {
                     String key = packet[Protocol.PT_TEACHING_KEY_POS];
 
                     List<Lecture_Subject_ProfessorDTO> list = dao.selectByProfessor(key);
+                    List<TimeTableInfo> timeTable = new LinkedList<TimeTableInfo>();
+
+                    //13.Lecture_Subject_ProfessorDTO ->  이쁘게 출력문
+                    for(Lecture_Subject_ProfessorDTO dto : list) {
+                        String time[] = dto.getLecture_time().split("/");
+                        String name = dto.getSubject_name();
+                        String classRomm = dto.getClassroom();
+                        for(int i = 0 ; i < time.length;i++){
+                            timeTable.add(new TimeTableInfo(name,time[i],classRomm));
+                        }
+                    }
+
+                    Collections.sort(timeTable);
+
                     int index = 1;
-                    packet = new String[list.size() + 1];
+                    packet = new String[timeTable.size() + 1];
                     packet[0] = "A";
 
-                    for(Lecture_Subject_ProfessorDTO dto : list)
-                    {
-                        packet[index++] = dto.toString();
+                    for(TimeTableInfo element : timeTable){
+                        packet[index++] = element.toString();
                     }
 
                     protocol = new Protocol(Protocol.SC_RES_TEACHINGTABLE_VIEW);
                     protocol.setPacket(packet);
                     writePacket(protocol.getPacket());
                     break;
-
-
                 }
-                case Protocol.CS_REQ_MEMBER_VIEW: //4.교수랑 학생을 교번이랑 학번으로 찾아서 조회하는 메소드 필요
+                case Protocol.CS_REQ_MEMBER_VIEW:
+                    //TODO: 교수와 학생 request 분리
                 {
-                    AdminDAO dao = new AdminDAO(jdbcConn);
-                    //4.교수랑 학생을 교번이랑 학번으로 찾아서 조회하는 메소드 필요
-                    //ProfessorDTO pdto = dao.selectAllProfessor();
-                    //StudentDTO sdto = dao.selectAllStudent();
-                    int index = 1;
+                    String key = packet[Protocol.PT_MEMBER_VIEW_KEY_POS];
+                    StudentDAO studentDAO = new StudentDAO(jdbcConn);
+                    StudentDTO studentDTO = studentDAO.searchByStudent_code(key);
+
                     packet = new String[2];
                     packet[0] = "0";
-                    //3.관리자가 교수랑 학생정보를 조회할때 이쁘게 출력할 정보들
-
-                    //packet[1] = pdto or sdto
-
+                    packet[Protocol.PT_MEMBER_VIEW_DATA_POS] = studentDTO.getStudentInfoForAdmin();
                     protocol = new Protocol(Protocol.SC_RES_MEMBER_VIEW);
                     protocol.setPacket(packet);
                     writePacket(protocol.getPacket());
                     break;
+
+                    ProfessorDAO professorDAO = new ProfessorDAO(jdbcConn);
+                    ProfessorDTO professorDTO = professorDAO.searchByProfessor_code(key);
+
+                    packet = new String[2];
+                    packet[0] = "0";
+                    packet[Protocol.PT_MEMBER_VIEW_DATA_POS] = professorDTO.getProfessorInfoForAdmin();
+                    protocol = new Protocol(Protocol.SC_RES_MEMBER_VIEW);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+                    break;
+
                 }
                 case Protocol.CS_REQ_ALLMEMBER_VIEW://모든 교수,학생 정보 조회 요청
                 {
@@ -497,14 +527,13 @@ public class ServerThread extends Thread {
                     int index = 1;
                     packet = new String[plist.size() + slist.size() + 1];
                     packet[0] = "16";
-                    //3.관리자가 교수랑 학생정보를 조회할때 이쁘게 출력할 정보들
                     for(ProfessorDTO dto : plist)
                     {
-                        packet[index++] = dto.toString();
+                        packet[index++] = dto.getProfessorInfoForAdmin();
                     }
                     for(StudentDTO dto : slist)
                     {
-                        packet[index++] = dto.toString();
+                        packet[index++] = dto.getStudentInfoForAdmin();
                     }
 
                     protocol = new Protocol(Protocol.SC_RES_ALLMEMBER_VIEW);
@@ -555,7 +584,8 @@ public class ServerThread extends Thread {
                     System.out.println("개설 교과목 정보 조회 성공");
                     break;
                 }
-                case Protocol.CS_REQ_SUBJECT_ENROLL: //교과목 >> 관리자가 생성 TODO: 메소드 부족 + 데이터부족 + 데이터포멧
+                case Protocol.CS_REQ_SUBJECT_ENROLL: //교과목 >> 관리자가 생성
+                    // TODO: 메소드 부족 + 데이터부족 + 데이터포멧
                 {
                     SubjectDAO subjectDAO = new SubjectDAO(sqlSessionFactory);
                     HashMap<String,Object> map = new HashMap<String,Object>();

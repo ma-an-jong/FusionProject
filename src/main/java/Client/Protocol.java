@@ -58,8 +58,9 @@ public class Protocol {
     public static final int PT_MYSTUDENT_KEY_POS = 1;
     public static final int PT_MYSTUDENT_PAGENUM_POS = 2;
 
-    //교수,학생 정보 조회 요청
-    //은 딱히 없음
+    ////교수,학생 정보 조회 요청
+    public static final int PT_MEMBER_VIEW_KEY_POS = 1; //key값 들어갈 위치
+    public static final int PT_MEMBER_VIEW_DATA_POS = 1;
 
     //사용자 계정 등록 요청
     public static final int PT_MEMBER_ENROLL_KEY_POS = 1;
