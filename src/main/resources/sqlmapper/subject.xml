@@ -35,6 +35,14 @@
         WHERE name = #{old_name}
     </update>
 
+    <!--Delete-->
+    <delete id="deleteSubject" statementType="PREPARED">
+        DELETE FROM Subject
+        WHERE subject_code = #{subject_code}
+    </delete>
 
+    <select id="selectByCode" resultMap="result">
+        SELECT idx FROM Subject WHERE subject_code = #{subject_code}
+    </select>
 
 </mapper>

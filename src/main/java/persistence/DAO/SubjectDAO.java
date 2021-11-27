@@ -36,6 +36,7 @@ public class SubjectDAO {
         }
         return list;
     }
+
     //map에 ( #{new_name},#{old_name}) 등록
     public void updateSubjectName(HashMap<String,String> map){
 
@@ -55,7 +56,6 @@ public class SubjectDAO {
 
     }
 
-    //map에 (#{subject_code},#{name},#{grade}) 등록
     public void insertSubject(HashMap<String,Object> map){
 
         SqlSession session = sqlSessionFactory.openSession();
@@ -75,4 +75,35 @@ public class SubjectDAO {
     }
 
     // 8.SubjectDAO에 과목코드로 교과목 삭제하는 기능 -->> xml 기반이라서 resources.sqlmapper.subjectxml에도 추가
+    public void deleteSubject(String subject_code){
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            session.insert("mapper.SubjectMapper.deleteSubject",subject_code);
+            session.commit();
+            System.out.println("교과목 삭제 완료");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            session.rollback();
+        }
+        finally {
+            session.close();
+        }
+
+    }
+
+    public int selectByCode(String Subject_Code){
+        SqlSession session = sqlSessionFactory.openSession();
+
+        int subject_idx = 0;
+        try {
+            subject_idx = session.selectOne("mapper.SubjectMapper.selectByCode");
+        } finally {
+            session.close();
+        }
+
+        return subject_idx;
+    }
+
+
 }

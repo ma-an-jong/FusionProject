@@ -57,5 +57,8 @@ public interface LectureMapper {
     List<Lecture_Subject_ProfessorDTO> selectByLecture_idx(@Param("idx") int idx);
     //paging은......
 //    public List<CourseDetailsDTO> selectStudentInfo(List<Lecture_Subject_ProfessorDTO> list,LectureDTO lectureDTO,int page);
+    @Select("SELECT * FROM lecture JOIN subject ON lecture_idx = idx where subject_code = #{subject_code}")
+    LectureDTO searchBySubjectCode(String subject_code);
+
 
 }

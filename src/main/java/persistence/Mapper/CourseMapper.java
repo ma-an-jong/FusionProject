@@ -25,8 +25,8 @@ public interface CourseMapper {
     })
     public List<CourseDetailsDTO> selectMyCourse(String myCode);
 
-    @Select( "SELECT * FROM Subject JOIN Lecture ON lecture_idx = idx WHERE lecture_idx = #{lecture_idx}")
-    public CourseDetailsDTO selectCourseByIdx(int lecture_idx);
+    @Select( "SELECT * FROM Subject JOIN Lecture ON lecture_idx = idx WHERE subject_code = #{subject_code}")
+    public CourseDetailsDTO selectCourseByCode(String subject_code);
 
     @Insert("Insert Into Course_details(cd_student_idx,cd_lecture_idx) Value (#{student_idx},#{lecture_idx})")
     public void addCourse(CourseDetailsDTO courseDetailsDTO);

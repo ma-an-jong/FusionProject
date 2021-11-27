@@ -15,6 +15,19 @@ public class StudentDAO extends UserDAO{
         super(conn);
     }
 
+    public StudentDTO searchByStudent_idx(int student_idx){
+
+        List<StudentDTO> list = super.selectAllStudent();
+
+        for(StudentDTO dto: list){
+            int s_idx = dto.getStudent_idx();
+            if(s_idx == student_idx){
+                return dto;
+            }
+        }
+        return null;
+    }
+
     public StudentDTO searchByStudent_code(String student_code){
 
         List<StudentDTO> list = super.selectAllStudent();

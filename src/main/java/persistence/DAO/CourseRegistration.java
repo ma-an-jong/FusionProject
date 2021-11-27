@@ -42,13 +42,13 @@ public class CourseRegistration {
 
     //5.CourseRegistration -> selectCourseByIdx 를 과목코드로 조회하는 기능 만들기
     // lecture랑 subject JOIN해서 만들어야함 
-    public CourseDetailsDTO selectCourseByIdx(int lecture_idx){
+    public CourseDetailsDTO selectCourseByCode(String subject_code){
         CourseDetailsDTO dto = null;
 
         try(SqlSession session = sqlSessionFactory.openSession()){
             CourseMapper mapper = session.getMapper(CourseMapper.class);
 
-            dto = mapper.selectCourseByIdx(lecture_idx);
+            dto = mapper.selectCourseByCode(subject_code);
 
         }
         catch (Exception e){

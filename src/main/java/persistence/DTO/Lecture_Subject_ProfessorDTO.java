@@ -47,7 +47,6 @@ public class Lecture_Subject_ProfessorDTO {
 
     }
 
-    //1.본인 시간표 조회에서 -> CourseDetailDTO 에서 lecture_time 만 String으로 리턴하는 메소드
 
 
 }

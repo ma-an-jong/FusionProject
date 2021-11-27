@@ -163,4 +163,21 @@ public class LectureDAO {
     }
 
 
+    // selectBySubjectCode
+    public LectureDTO searchBySubjectCode(String subject_code){
+        LectureDTO dto = null;
+
+        try(SqlSession session = sqlSessionFactory.openSession()){
+            LectureMapper mapper = session.getMapper(LectureMapper.class);
+
+            dto = mapper.searchBySubjectCode(subject_code);
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return dto;
+    }
+
 }

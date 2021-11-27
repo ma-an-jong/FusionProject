@@ -3,20 +3,46 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="Mapper.SubjectMapper">
+<mapper namespace="mapper.SubjectMapper">
     <resultMap id="result" type="persistence.DTO.SubjectDTO">
-        <result property = "idx" column = "idx"/>
+        <result property="idx" column="idx"/>
         <result property="subject_code" column="subject_code"/>
         <result property="name" column="name"/>
-        <result property="lecture_time" column="lecture_time"/>
-        <result property="maximum" column="maximum"/>
-        <result property="current" column="current"/>
         <result property="grade" column="grade"/>
     </resultMap>
 
+    <!--insert-->
+    <insert id="insertSubject" statementType="PREPARED">
 
+    INSERT INTO Subject(subject_code,name,grade) VALUE (#{subject_code},#{name},#{grade})
+
+    </insert>
+
+    <!--read-->
     <select id="selectAll" resultMap="result">
-        SELECT * FROM subject
+        SELECT * FROM SUBJECT
+    </select>
+
+    <select id = "selectByGrade" resultMap = "result">
+        SELECT * FROM Subject WHERE grade = #{grade}
+    </select>
+
+    <!--update-->
+    <update id="updateSubjectName"
+            statementType="PREPARED">
+        UPDATE Subject
+        SET name = #{new_name}
+        WHERE name = #{old_name}
+    </update>
+
+    <!--Delete-->
+    <delete id="deleteSubject" statementType="PREPARED">
+        DELETE FROM Subject
+        WHERE subject_code = #{subject_code}
+    </delete>
+
+    <select id="selectByCode" resultMap="result">
+        SELECT idx FROM Subject WHERE subject_code = #{subject_code}
     </select>
 
 </mapper>
