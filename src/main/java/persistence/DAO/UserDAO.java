@@ -223,9 +223,9 @@ public class UserDAO {
     
     //4.교수랑 학생을 교번이랑 학번으로 찾아서 조회하는 메소드 필요
     // => 교번으로 교수찾기, 학번으로 학생찾기 2개로 따로 진행
-//    public List<StudentDTO> selectStudentWithCode(){
-//
-//    }
+    //    public List<StudentDTO> selectStudentWithCode(){
+    //
+    //    }
 
 
 

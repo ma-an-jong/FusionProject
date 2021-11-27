@@ -27,6 +27,19 @@ public class ProfessorDAO extends UserDAO {
         return null;
     }
 
+    public int selectByProfessor_code(String professor_code) {
+        List<ProfessorDTO> list = super.selectAllProfessor();
+
+        for (ProfessorDTO dto : list) {
+            String p_code = dto.getProfessor_code();
+            if (p_code == professor_code) {
+                return dto.getProfessor_idx();
+            }
+        }
+        return 0;
+
+    }
+
     public ProfessorDTO searchByProfessor_code(String professor_code ) {
 
         List<ProfessorDTO> list = super.selectAllProfessor();

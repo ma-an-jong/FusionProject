@@ -17,7 +17,9 @@ public class LectureDAO {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
-    //select
+    //================================================================
+    //========================== SELECT ==============================
+    //================================================================
     public List<Lecture_Subject_ProfessorDTO> selectAll(){
         List<Lecture_Subject_ProfessorDTO> list = null;
 
@@ -101,8 +103,28 @@ public class LectureDAO {
         return list;
     }
 
-    //insert
-    public void inserSubject(LectureDTO lectureDTO) {
+    // selectBySubjectCode
+    public LectureDTO searchBySubjectCode(String subject_code){
+        LectureDTO list = null;
+
+        try(SqlSession session = sqlSessionFactory.openSession()){
+            LectureMapper mapper = session.getMapper(LectureMapper.class);
+
+            list = mapper.searchBySubjectCode(subject_code);
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+
+    //================================================================
+    //========================== INSERT ==============================
+    //================================================================
+    public void insertSubject(LectureDTO lectureDTO) {
 
         SqlSession session = sqlSessionFactory.openSession();
         LectureMapper mapper = session.getMapper(LectureMapper.class);
@@ -123,13 +145,37 @@ public class LectureDAO {
 
     }
 
-    //update
-    public void updateSubjectByClassRoom(String classroom,int lecture_idx){
+
+    //================================================================
+    //========================== UPDATE ==============================
+    //================================================================
+
+    // lecture_idx로 강의실 변경
+//    public void updateSubjectByClassRoom(String classroom,int lecture_idx){
+//        SqlSession session = sqlSessionFactory.openSession();
+//        LectureMapper mapper = session.getMapper(LectureMapper.class);
+//
+//        try{
+//            mapper.updateSubjectByClassRoom(classroom,lecture_idx);
+//            session.commit();
+//            System.out.println("강의실 update 성공");
+//
+//        }
+//        catch(Exception e){
+//            e.printStackTrace();
+//            session.rollback();
+//        }
+//        finally{
+//            session.close();
+//        }
+//    }
+    // 과목코드로 강의실 변경
+    public void updateSubjectByClassRoom(String classroom,String subject_code){
         SqlSession session = sqlSessionFactory.openSession();
         LectureMapper mapper = session.getMapper(LectureMapper.class);
 
         try{
-            mapper.updateSubjectByClassRoom(classroom,lecture_idx);
+            mapper.updateSubjectByClassRoom(classroom,subject_code);
             session.commit();
             System.out.println("강의실 update 성공");
 
@@ -143,12 +189,31 @@ public class LectureDAO {
         }
     }
 
-    public void updateSubjectByMaximum(int maximum,int lecture_idx){
+
+//    public void updateSubjectByMaximum(int maximum,int lecture_idx){
+//        SqlSession session = sqlSessionFactory.openSession();
+//        LectureMapper mapper = session.getMapper(LectureMapper.class);
+//
+//        try{
+//            mapper.updateSubjectByMaximum(maximum,subject_code);
+//            session.commit();
+//            System.out.println("최대 강의 인원 update 성공");
+//
+//        }
+//        catch(Exception e){
+//            e.printStackTrace();
+//            session.rollback();
+//        }
+//        finally{
+//            session.close();
+//        }
+//    }
+    public void updateSubjectByMaximum(int maximum,String subject_code){
         SqlSession session = sqlSessionFactory.openSession();
         LectureMapper mapper = session.getMapper(LectureMapper.class);
 
         try{
-            mapper.updateSubjectByMaximum(maximum,lecture_idx);
+            mapper.updateSubjectByMaximum(maximum,subject_code);
             session.commit();
             System.out.println("최대 강의 인원 update 성공");
 
@@ -162,5 +227,27 @@ public class LectureDAO {
         }
     }
 
+
+    //================================================================
+    //========================== DELETE ==============================
+    //================================================================
+    // 과목코드로 lecture 삭제하기
+    public void deleteLectureBySubjectCode(String subject_code){
+        SqlSession session = sqlSessionFactory.openSession();
+        LectureMapper mapper = session.getMapper(LectureMapper.class);
+
+        try{
+            mapper.deleteLectureBySubjectCode(subject_code);
+            session.commit();
+            System.out.println("해당 개설교과목이 삭제되었습니다.");
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            session.rollback();
+        }
+        finally {
+            session.close();
+        }
+    }
 
 }

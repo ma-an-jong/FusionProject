@@ -25,6 +25,19 @@ public class SubjectDAO {
         return list;
     }
 
+    public int selectByCode(String Subject_Code){
+        SqlSession session = sqlSessionFactory.openSession();
+
+        int subject_idx = 0;
+        try {
+            subject_idx = session.selectOne("mapper.SubjectMapper.selectByCode");
+        } finally {
+            session.close();
+        }
+
+        return subject_idx;
+    }
+
     public List<SubjectDTO> selectByGrade(int grade){
         List<SubjectDTO> list = null;
 
