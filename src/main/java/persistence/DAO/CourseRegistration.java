@@ -48,7 +48,7 @@ public class CourseRegistration {
         try(SqlSession session = sqlSessionFactory.openSession()){
             CourseMapper mapper = session.getMapper(CourseMapper.class);
 
-            dto = mapper.selectCourseByIdx(subject_code);
+            dto = mapper.selectCourseByCode(subject_code);
 
         }
         catch (Exception e){

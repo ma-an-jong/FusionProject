@@ -150,6 +150,27 @@ public class LectureDAO {
     //========================== UPDATE ==============================
     //================================================================
 
+    //담당교수 변경
+    public void updateChangeProfessor(int lecture_idx ,int professor_idx){
+        SqlSession session = sqlSessionFactory.openSession();
+        LectureMapper mapper = session.getMapper(LectureMapper.class);
+
+        try{
+            mapper.updateChangeProfessor(lecture_idx, professor_idx);
+            session.commit();
+            System.out.println("담당교수가 변경되었습니다.");
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            //System.out.println("담당교수 변경에 실패하였습니다.");
+            session.rollback();
+        }
+        finally
+        {
+            session.close();
+        }
+    }
+
     // lecture_idx로 강의실 변경
 //    public void updateSubjectByClassRoom(String classroom,int lecture_idx){
 //        SqlSession session = sqlSessionFactory.openSession();

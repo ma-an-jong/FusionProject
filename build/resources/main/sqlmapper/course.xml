@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.CourseMapper">
+    <resultMap id="courseResult" type="persistence.DTO.StudentDTO">
+        <result property="student_idx" column="student_idx"/>
+        <result property="student_code" column="student_code"/>
+        <result property="department" column="department"/>
+        <result property="sname" column="sname"/>
+        <result property="grade" column="grade"/>
+        <result property="phone" column="phone"/>
+
+    </resultMap>
+
+    <!-- select paging-->
+        <select id = "selectWithPaging" resultMap = "courseResult">
+            SELECT student_idx,student_code,sname,department,grade,phone
+            FROM course_details join student on student_idx = cd_student_idx
+                                join subject on cd_lecture_idx = idx
+            WHERE subject_code = #{subject_code}
+            LIMIT #{pageNum},2
+    </select>
+</mapper>

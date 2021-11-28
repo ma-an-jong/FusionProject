@@ -51,6 +51,12 @@ public interface LectureMapper {
             " VALUE (#{lecture_idx},#{lecture_professor_idx},#{lecture_time},#{maximum},#{current},#{classroom})")
     void insertSubject(LectureDTO lectureDTO);
 
+
+    //update
+    // 담당교수 변경
+    @Update("UPDATE lecture SET lecture_professor_idx = #{professor_idx} WHERE lecture_idx = #{lecture_idx}")
+    public void updateChangeProfessor(@Param("lecture_idx") int lecture_idx , @Param("professor_idx") int professor_idx);
+
     // lecture_idx로 classroom 변경
     //@Update("UPDATE LECTURE SET classroom = #{classroom} WHERE lecture_idx = #{lecture_idx}" )
     //public void updateSubjectByClassRoom(@Param("classroom") String classroom,@Param("lecture_idx") int lecture_idx);

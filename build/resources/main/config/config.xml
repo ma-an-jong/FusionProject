@@ -6,6 +6,8 @@
 <configuration>
     <typeAliases>
         <typeAlias alias="Subject" type="persistence.DTO.SubjectDTO"/>
+        <typeAlias alias="Lecture_Subject_Professor" type="persistence.DTO.Lecture_Subject_ProfessorDTO"/>
+        <typeAlias alias="CourseDetails" type="persistence.DTO.CourseDetailsDTO"/>
     </typeAliases>
 
     <environments default="development">
@@ -27,8 +29,6 @@
 
     <mappers>
         <mapper resource="sqlmapper/subject.xml"/>
+        <mapper resource="sqlmapper/course.xml"/>
     </mappers>
-
-
-
 </configuration>
