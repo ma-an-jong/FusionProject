@@ -28,30 +28,27 @@ public class Main {
             e.printStackTrace();
             return;
         }
-        String address =null;
-        try{
-            address = InetAddress.getLocalHost().getHostAddress();
-        }
-        catch (Exception e){
-            System.out.println("InetAddressException");
-            e.printStackTrace();
-            return;
-        }
-        try{
-            serverSocket.bind(new InetSocketAddress("192.168.232.7",5000));
+
+        try
+        {
+            serverSocket.bind(new InetSocketAddress("192.168.0.96",5000));
+            System.out.println("server on");
 
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             System.out.println("bindException");
             e.printStackTrace();
         }
-        System.out.println(address + ":" + 5000);
+
         Socket socket = null;
+
         while (true)
         {
             try
             {
                 socket = serverSocket.accept();
+                System.out.println("클라이언트 접속:" + socket.getInetAddress() + ":" + socket.getPort());
             }
 
             catch (Exception e)
@@ -61,7 +58,6 @@ public class Main {
                 return;
             }
 
-            System.out.println("[" + socket.getInetAddress() + ":" + socket.getPort() + "]");
             ServerThread serverThread = new ServerThread(socket);
             serverThread.run();
         }

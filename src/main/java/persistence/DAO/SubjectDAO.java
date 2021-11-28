@@ -25,6 +25,19 @@ public class SubjectDAO {
         return list;
     }
 
+    public int selectByCode(String Subject_Code){
+        SqlSession session = sqlSessionFactory.openSession();
+
+        int subject_idx = 0;
+        try {
+            subject_idx = session.selectOne("mapper.SubjectMapper.selectByCode");
+        } finally {
+            session.close();
+        }
+
+        return subject_idx;
+    }
+
     public List<SubjectDTO> selectByGrade(int grade){
         List<SubjectDTO> list = null;
 
@@ -36,7 +49,6 @@ public class SubjectDAO {
         }
         return list;
     }
-
     //map에 ( #{new_name},#{old_name}) 등록
     public void updateSubjectName(HashMap<String,String> map){
 
@@ -56,6 +68,7 @@ public class SubjectDAO {
 
     }
 
+    //map에 (#{subject_code},#{name},#{grade}) 등록
     public void insertSubject(HashMap<String,Object> map){
 
         SqlSession session = sqlSessionFactory.openSession();
@@ -91,19 +104,4 @@ public class SubjectDAO {
         }
 
     }
-
-    public int selectByCode(String Subject_Code){
-        SqlSession session = sqlSessionFactory.openSession();
-
-        int subject_idx = 0;
-        try {
-            subject_idx = session.selectOne("mapper.SubjectMapper.selectByCode");
-        } finally {
-            session.close();
-        }
-
-        return subject_idx;
-    }
-
-
 }
