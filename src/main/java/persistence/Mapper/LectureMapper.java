@@ -37,28 +37,60 @@ public interface LectureMapper {
 
     @Select("SELECT * FROM Lecture JOIN SUBJECT ON lecture_idx = idx " +
             "JOIN PROFESSOR ON lecture_professor_idx = professor_idx" +
-            " WHERE pname = #{p_name}")
+            " WHERE professor_code = #{professor_code}")
     @ResultMap("JoinResultSet")
-    List<Lecture_Subject_ProfessorDTO> selectByProfessor(String p_name);
+    List<Lecture_Subject_ProfessorDTO> selectByProfessor(String professor_code);
 
+    @Select("SELECT * FROM lecture JOIN subject ON lecture_idx = idx where subject_code = #{subject_code}")
+    LectureDTO searchBySubjectCode(String subject_code);
+
+    //@Select("SELECT * FROM lecture")
+
+
+
+    // insert
     @Insert("INSERT INTO LECTURE(lecture_idx,lecture_professor_idx,lecture_time,maximum,current,classroom)" +
             " VALUE (#{lecture_idx},#{lecture_professor_idx},#{lecture_time},#{maximum},#{current},#{classroom})")
     void insertSubject(LectureDTO lectureDTO);
 
-    @Update("UPDATE LECTURE SET classroom = #{classroom} WHERE lecture_idx = #{lecture_idx}" )
-    public void updateSubjectByClassRoom(@Param("classroom") String classroom,@Param("lecture_idx") int lecture_idx);
+    //@Insert("INSERT INTO lecture(syllabus) VALUE (#{syllabus}) ")
 
-    @Update("UPDATE LECTURE SET maximum = #{maximum} WHERE lecture_idx = #{lecture_idx} ")
-    public void updateSubjectByMaximum(@Param("maximum") int maximum,@Param("lecture_idx") int lecture_idx);
+    //update
+    // 담당교수 변경
+    @Update("UPDATE lecture SET lecture_professor_idx = #{professor_idx} WHERE lecture_idx = #{lecture_idx}")
+    public void updateChangeProfessor(@Param("lecture_idx") int lecture_idx , @Param("professor_idx") int professor_idx);
+
+    // lecture_idx로 classroom 변경
+    //@Update("UPDATE LECTURE SET classroom = #{classroom} WHERE lecture_idx = #{lecture_idx}" )
+    //public void updateSubjectByClassRoom(@Param("classroom") String classroom,@Param("lecture_idx") int lecture_idx);
+    //------------------------------------------------------------------------------------------------------------------------
+    @Update("UPDATE LECTURE JOIN SUBJECT ON lecture_idx = idx SET class = #{classroom} WHERE subject_code = #{subject_code} ")
+    public void updateSubjectByClassRoom(@Param("classroom") String classroom,@Param("subject_code") String subject_code);
+    //========================================================================================================================
+
+
+    // lecture_idx로 수강가능인원변경
+    //@Update("UPDATE LECTURE SET maximum = #{maximum} WHERE lecture_idx = #{lecture_idx} ")
+    //public void updateSubjectByMaximum(@Param("maximum") int maximum,@Param("lecture_idx") int lecture_idx);
+    //------------------------------------------------------------------------------------------------------------------------
+    @Update("UPDATE LECTURE JOIN SUBJECT ON lecture_idx = idx SET maximum = #{maximum} WHERE subject_code = #{subject_code}")
+    public void updateSubjectByMaximum(@Param("maximum") int maximum,@Param("lecture_idx") String subject_code);
+    //========================================================================================================================
+
 
     @Select( "SELECT * FROM Lecture JOIN SUBJECT ON lecture_idx = idx " +
             "JOIN PROFESSOR ON lecture_professor_idx = professor_idx" +
             "WHERE lecture_idx = #{idx}")
     List<Lecture_Subject_ProfessorDTO> selectByLecture_idx(@Param("idx") int idx);
+
+    // delete
+    // 과목코드로 lecture 삭제하기
+    @Delete("DELETE lecture FROM lecture LEFT JOIN subject ON lecture_idx = idx where subject_code = #{subject_code}")
+    public void deleteLectureBySubjectCode(@Param("subject_code") String subject_code);
+
+
+
     //paging은......
 //    public List<CourseDetailsDTO> selectStudentInfo(List<Lecture_Subject_ProfessorDTO> list,LectureDTO lectureDTO,int page);
-    @Select("SELECT * FROM lecture JOIN subject ON lecture_idx = idx where subject_code = #{subject_code}")
-    LectureDTO searchBySubjectCode(String subject_code);
-
 
 }

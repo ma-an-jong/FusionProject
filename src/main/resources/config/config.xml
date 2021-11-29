@@ -19,7 +19,7 @@
                 <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
                 <property name="url" value="jdbc:mysql://localhost/lecture_registration?characterEncoding=utf8&amp;serverTimezone=UTC&amp;useSSL = false"/>
                 <property name="username" value="root"/>
-                <property name="password" value="20180017"/>
+                <property name="password" value="alswhd11"/>
             </dataSource>
 
         </environment>

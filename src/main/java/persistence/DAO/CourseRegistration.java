@@ -11,6 +11,7 @@ import persistence.Mapper.LectureRegistrationDateMapper;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,7 +30,6 @@ public class CourseRegistration {
 
         try(SqlSession session = sqlSessionFactory.openSession()){
             CourseMapper mapper = session.getMapper(CourseMapper.class);
-
             list = mapper.selectMyCourse(myCode);
 
         }
@@ -41,7 +41,7 @@ public class CourseRegistration {
     }
 
     //5.CourseRegistration -> selectCourseByIdx 를 과목코드로 조회하는 기능 만들기
-    // lecture랑 subject JOIN해서 만들어야함 
+    // lecture랑 subject JOIN해서 만들어야함
     public CourseDetailsDTO selectCourseByCode(String subject_code){
         CourseDetailsDTO dto = null;
 
@@ -58,7 +58,7 @@ public class CourseRegistration {
         return dto;
     }
 
-    public void addCoure(CourseDetailsDTO courseDetailsDTO){
+    public boolean addCoure(CourseDetailsDTO courseDetailsDTO){
         SqlSession session = sqlSessionFactory.openSession();
         CourseMapper mapper = session.getMapper(CourseMapper.class);
 
@@ -68,7 +68,8 @@ public class CourseRegistration {
             LectureRegistrationDateMapper lrdMapper = session.getMapper(LectureRegistrationDateMapper.class);
             List<LectureRegistrationDateDTO> seasonList = lrdMapper.selectAll();
 
-            SimpleDateFormat sdf=new SimpleDateFormat("2021-11-09");
+            LocalDate localDate = LocalDate.now();
+            SimpleDateFormat sdf=new SimpleDateFormat(localDate.toString());
             String ss=sdf.format(new java.util.Date());
             Date today= Date.valueOf(ss);
 
@@ -80,7 +81,7 @@ public class CourseRegistration {
 
             if(!flag[courseDetailsDTO.getGrade()]){
                 System.out.println("수강신청 기간이 아닙니다.");
-                return;
+                return false;
             }
 
             //강의시간이 겹치는지, 이미 신청한 과목인지, 정원이 초과되었는지
@@ -103,7 +104,7 @@ public class CourseRegistration {
                             case '금': day = 4;break;
                             default:
                                 System.out.println("잘못된 강의시간");
-                                return;
+                                return false;
                         }
                         for(int i = 1; i < str[j].length();i++){
                             timeTable[str[j].charAt(i) -'1'][day] = true;
@@ -125,13 +126,13 @@ public class CourseRegistration {
                         case '금': lecture_day = 4;break;
                         default:
                             System.out.println("잘못된 강의시간");
-                            return;
+                            return false;
                     }
 
                     for(int i = 1 ; i < str[j].length();i++){
                         if(timeTable[str[j].charAt(i)-'1'][lecture_day]){
                             System.out.println("중복된 강의시간");
-                            return;
+                            return false;
                         }
                     }
 
@@ -139,24 +140,26 @@ public class CourseRegistration {
 
                 if(lecture.getLecture_idx() == courseDetailsDTO.getLecture_idx()){
                     System.out.println("이미 수강신청된 과목입니다.");
-                    return;
+                    return false;
                 }
 
             }
 
             if(courseDetailsDTO.getCurrent() >= courseDetailsDTO.getMaximum()){
                 System.out.println("정원이 초과되었습니다.");
-                return;
+                return false;
             }
 
             mapper.addCourse(courseDetailsDTO);
             mapper.addCurrent(courseDetailsDTO.getLecture_idx());
             session.commit();
             System.out.println("수강신청 성공");
+            return true;
         }
         catch (Exception e){
             e.printStackTrace();
             session.rollback();
+            return false;
         }
         finally {
             session.close();
@@ -164,28 +167,34 @@ public class CourseRegistration {
 
     }
 
-    public void deleteCourse(CourseDetailsDTO courseDetailsDTO){
+    public boolean deleteCourse(CourseDetailsDTO courseDetailsDTO){
         SqlSession session = sqlSessionFactory.openSession();
         CourseMapper mapper = session.getMapper(CourseMapper.class);
 
         try{
-            List<CourseDetailsDTO> list = selectMyCourse(courseDetailsDTO. getStudent_code());
+            List<CourseDetailsDTO> list = selectMyCourse(courseDetailsDTO.getStudent_code());
+
             for (CourseDetailsDTO lecture: list) {
-                if(lecture.getLecture_idx() == courseDetailsDTO.getLecture_idx()){
+                if(lecture.getLecture_idx() == courseDetailsDTO.getLecture_idx())
+                {
                     mapper.deleteCourse(courseDetailsDTO);
                     mapper.discountCurrent(courseDetailsDTO.getLecture_idx());
+                    session.commit();
+                    System.out.println("수강신청 삭제 완료");
                 }
             }
-            session.commit();
-            System.out.println("수강신청 삭제 완료");
+
         }
         catch (Exception e){
             e.printStackTrace();
             session.rollback();
+            return false;
         }
         finally {
             session.close();
         }
+
+        return true;
 
     }
 
@@ -205,7 +214,7 @@ public class CourseRegistration {
             e.printStackTrace();
         }
 
-    return list;
+        return list;
     }
 
 

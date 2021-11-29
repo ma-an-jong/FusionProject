@@ -12,4 +12,15 @@ public class SubjectDTO {
     private String subject_code;
     private String name;
     private int grade;
+
+    // 출력
+    public String printSubjectInfo(){
+
+        return "===== 강좌조회 ====="
+               + "[" + name + "] "
+               + "과목코드: " + subject_code + " "
+               + "해당 학년: " + grade + " "
+               ;
+
+    }
 }

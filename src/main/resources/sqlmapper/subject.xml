@@ -37,11 +37,11 @@
 
     <!--Delete-->
     <delete id="deleteSubject" statementType="PREPARED">
-        DELETE FROM Subject
+        DELETE FROM subject
         WHERE subject_code = #{subject_code}
     </delete>
 
-    <select id="selectByCode" resultMap="result">
+    <select id="selectByCode" resultMap="result" statementType="PREPARED">
         SELECT idx FROM Subject WHERE subject_code = #{subject_code}
     </select>
 

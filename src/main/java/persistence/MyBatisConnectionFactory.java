@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import persistence.Mapper.CourseMapper;
 import persistence.Mapper.LectureMapper;
 import persistence.Mapper.LectureRegistrationDateMapper;
+import persistence.Mapper.SyllabusInsertTimeMapper;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,7 +26,8 @@ public class MyBatisConnectionFactory {
                 Class[] mappers = {
                         LectureRegistrationDateMapper.class,
                         LectureMapper.class,
-                        CourseMapper.class
+                        CourseMapper.class,
+                        SyllabusInsertTimeMapper.class
                 };
 
                 for(Class mapper : mappers){

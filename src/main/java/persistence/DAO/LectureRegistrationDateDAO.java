@@ -21,7 +21,7 @@ public class LectureRegistrationDateDAO {
     public List<LectureRegistrationDateDTO> selectAll(){
         List<LectureRegistrationDateDTO> list = null;
 
-        try(SqlSession session = sqlSessionFactory.openSession()){
+            try(SqlSession session = sqlSessionFactory.openSession()){
             LectureRegistrationDateMapper mapper = session.getMapper(LectureRegistrationDateMapper.class);
             list = mapper.selectAll();
         }
@@ -46,11 +46,11 @@ public class LectureRegistrationDateDAO {
         return dto;
     }
 
-    public void updateSeason(int grade,Date startDate, Date endDate){
+    public boolean updateSeason(int grade,Date startDate, Date endDate){
 
         SqlSession session = sqlSessionFactory.openSession();
         LectureRegistrationDateMapper mapper = session.getMapper(LectureRegistrationDateMapper.class);
-
+        boolean flag = false;
         try{
 
             List<LectureRegistrationDateDTO> list = mapper.selectAll();
@@ -62,34 +62,46 @@ public class LectureRegistrationDateDAO {
                     mapper.updateSeason(grade,startDate,endDate);
                     session.commit();
                     System.out.println("업데이트 완료: "+grade+"학년 " + startDate.toString() +  " ~ " + endDate.toString());
-                    return;
+                    flag = true;
+                    break;
                 }
             }
 
-            mapper.insertSeason(grade,startDate,endDate);
-            session.commit();
-            System.out.println("생성 완료: "+grade+"학년 " + startDate +  " ~ " + endDate);
+
+            if(!flag){
+                mapper.insertSeason(grade,startDate,endDate);
+                session.commit();
+                System.out.println("생성 완료: "+grade+"학년 " + startDate +  " ~ " + endDate);
+            }
 
         }
         catch (Exception e){
             e.printStackTrace();
             session.rollback();
+            flag = false;
+
         }
         finally {
             session.close();
         }
 
-
-
+        return flag;
     }
 
-    public void setSeason(int grade,Date startDate,Date endDate){
+    public boolean setSeason(int grade,Date startDate,Date endDate){
         LectureRegistrationDateDAO lectureRegistrationDateDAO = new LectureRegistrationDateDAO(sqlSessionFactory);
+        boolean flag ;
+        if(0 < grade && grade < 5){
+            flag = lectureRegistrationDateDAO.updateSeason(grade,startDate,endDate);
+        }
 
-        if(0 < grade && grade < 5)
-            lectureRegistrationDateDAO.updateSeason(grade,startDate,endDate);
-        else
+        else{
             System.out.println("잘못된 학년정보");
+            flag = false;
+        }
+
+        return flag;
+
 
     }
 

@@ -12,23 +12,7 @@ public class AdminDAO extends UserDAO{
         super(conn);
     }
 
-
-
-    /*
-
-        교과목 생성/수정/삭제
-
-        강의 계획서 입력 기간 설정
-          설정된 입력 기간 내에만 강의 계획서 입력 기능 활성화
-
-        학년별 수강 신청 기간 설정
-          - 학년 단위로 교과목 수강 신청 기간을 설정할 수 있음
-
-     */
-
-    //교수·학생 계정 생성
-
-    public void createStudent(String student_code,String password,String department,String sname,int grade, String phone)  {
+    public boolean createStudent(String student_code,String password,String department,String sname,int grade, String phone)  {
 
         int idx = super.createUser(student_code,password,STUDENT_CATEGORY);
         ResultSet rs = null;
@@ -62,13 +46,15 @@ public class AdminDAO extends UserDAO{
                 e.printStackTrace();
                 System.out.println("ROLLBACK 실패");
             }
+            return false;
         }
+        return true;
 
 
 
     }
 
-    public void createProfessor(String professor_code,String password,String department,String pname,String phone)  {
+    public boolean createProfessor(String professor_code,String password,String department,String pname,String phone)  {
 
         int idx = super.createUser(professor_code,password,PROFESSOR_CATEGORY);
 
@@ -100,8 +86,9 @@ public class AdminDAO extends UserDAO{
                 e.printStackTrace();
                 System.out.println("ROLLBACK 실패");
             }
+            return false;
         }
-
+        return true;
     }
 
     public void createAdmin(String id,String password){

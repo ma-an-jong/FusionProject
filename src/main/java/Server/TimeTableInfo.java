@@ -3,11 +3,11 @@ package Server;
 public class TimeTableInfo implements Comparable<TimeTableInfo> {
 
     private static enum Day {
-        월(5),
-        화(4),
+        월(1),
+        화(2),
         수(3),
-        목(2),
-        금(1);
+        목(4),
+        금(5);
         int value;
         private Day(int value){
             this.value = value;
@@ -46,7 +46,7 @@ public class TimeTableInfo implements Comparable<TimeTableInfo> {
     }
 
     public String toString(){
-        return name +"\n" + lectureTime +"\n" + classRoom+"\n";
+        return "과목명: " + name +"강의 시간: " + lectureTime + "강의실: " + classRoom+" ";
     }
 
 }

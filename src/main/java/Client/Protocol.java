@@ -27,11 +27,14 @@ public class Protocol {
     public static final int PT_LOGIN_GRADE_POS = 2; //로그인 응답 학년 위치
     public static final int PT_LOGIN_CATEGORY_POS = 3; //로그인 응답 카테고리 위치
 
-    //학생 개인정보 수정 위치
-    public static final int PT_PERSONALINFO_NAME_POS = 2;
-    public static final int PT_PERSONALINFO_DEPARTMENT_POS = 3;
-    public static final int PT_PERSONALINFO_PHONE_POS = 4;
-    public static final int PT_PERSONALINFO_GRADE_POS = 5;
+    //개인정보 수정 위치
+    public static final int PT_PERSONALINFO_ID_POS = 1;
+    public static final int PT_PERSONALINFO_PASSWORD_POS = 2;
+    public static final int PT_PERSONALINFO_CODE_POS = 3;
+    public static final int PT_PERSONALINFO_NAME_POS = 4;
+    public static final int PT_PERSONALINFO_DEPARTMENT_POS = 5;
+    public static final int PT_PERSONALINFO_PHONE_POS = 6;
+    public static final int PT_PERSONALINFO_GRADE_POS = 7;
 
     //학생 수강신청 인증 관련 위치
     public static final int PT_REGISTRATION_GRADE_POS = 1;
@@ -41,7 +44,6 @@ public class Protocol {
     public static final int PT_MYSUBJECT_SUBJECT_CODE_POS = 2;
 
     //학생 개인정보 조회 위치
-    public static final int PT_PERSONALINFO_CATEGORY_POS = 2;
     public static final int PT_PERSONALINFO_KEY_POS = 1;
 
     //학생 수강 과목 조회 요청
@@ -49,6 +51,20 @@ public class Protocol {
 
     //학생 본인 시간표 조회 요청 위치
     public static final int PT_TIMETABLE_KEY_POS = 1;
+
+    //학생 -> 강의 계획서 조회
+    public static final int PT_SYLLABUS_VIEW_KEY_POS= 1;
+    public static final int PT_SYLLABUS_VIEW_CONTEXT_POS = 2;
+
+    //교수 -> 강의 계획서 등록
+    public static final int PT_SYLLABUS_FILE_KEY_POS= 1;
+    public static final int PT_SYLLABUS_FILE_CONTEXT_POS= 2;
+
+    //교수 -> 강의 계획서 등록인증
+    public static final int PT_SYLLABUS_ENROLL_STARTDATE_POS = 1;
+    public static final int PT_SYLLABUS_ENROLL_ENDDATE_POS = 2;
+
+    //강의 계획서 조회
 
     //개설 교과목 목록 조회
     //딱히 필요한 정보 없음
@@ -106,6 +122,10 @@ public class Protocol {
     public static final int PT_REGISTRATIONPERIOD_START_POS = 2;
     public static final int PT_REGISTRATIONPERIOD_END_POS = 3;
 
+    //수강신청 기간 등록 요청
+    public static final int PT_SYLLABUSPERIOD_START_POS = 1;
+    public static final int PT_SYLLABUSPERIOD_END_POS = 2;
+
     //프로토콜 타입
     public static final String PT_EXIT = "0"; //프로그램 종료
     public static final String PT_REQ_LOGIN = "1"; //로그인 요청
@@ -134,11 +154,16 @@ public class Protocol {
     public static final String CS_REQ_MYSUBJECT_DELETE = "B-5"; //수강 과목 삭제 요청
     public static final String SC_RES_MYSUBJECT_DELETE = "C-4"; //수강 과목 삭제 요청 응답
 
-    //개인정보 및 비밀번호 조회 및 수정 TODO : 교수 학생 분할
-    public static final String CS_REQ_PERSONALINFO_VIEW = "7-A"; //개인정보 조회 요청
-    public static final String SC_RES_PERSONALINFO_VIEW = "8-14"; //개인정보 조회 요청 응답
-    public static final String CS_REQ_PERSONALINFO_UPDATE = "B-3"; //개인정보 수정 요청
-    public static final String SC_RES_PERSONALINFO_UPDATE = "C-0"; //개인정보 수정 요청 응답
+    //개인정보 및 비밀번호 조회 및 수정
+    public static final String CS_REQ_PROFESSOR_PERSONALINFO_VIEW = "7-A"; //교수 개인정보 조회 요청
+    public static final String SC_RES_PROFESSOR_PERSONALINFO_VIEW = "8-14"; //교수 개인정보 조회 요청 응답
+    public static final String CS_REQ_STUDENT_PERSONALINFO_VIEW = "7-C"; //학생 개인정보 조회 요청
+    public static final String SC_RES_STUDENT_PERSONALINFO_VIEW = "8-14"; //학생 개인정보 조회 요청 응답
+
+    public static final String CS_REQ_PROFESSOR_PERSONALINFO_UPDATE = "B-113"; //교수 개인정보 수정 요청
+    public static final String SC_RES_PROFESSOR_PERSONALINFO_UPDATE = "C-10"; //교수 개인정보 수정 요청 응답
+    public static final String CS_REQ_STUDENT_PERSONALINFO_UPDATE = "B-3"; //학생 개인정보 수정 요청
+    public static final String SC_RES_STUDENT_PERSONALINFO_UPDATE = "C-0"; //학생 개인정보 수정 요청 응답
 
     //본인 시간표 조회
     public static final String CS_REQ_TIMETABLE_VIEW = "7-8"; //본인 시간표 조회 요청
@@ -157,10 +182,13 @@ public class Protocol {
     //강의계획서 등록,수정
     public static final String CS_REQ_SYLLABUS_ENROLL = "9-2"; //담당 교과목 강의계획서 등록 요청
     public static final String SC_RES_SYLLABUS_ENROLL = "A-0"; //담당 교과목 강의계획서 등록 요청 응답
+
     public static final String CS_REQ_SYLLABUS_SENDFILE = "3-0"; //강의계획서 파일 전송 요청
     public static final String SC_RES_SYLLABUS_SENDFILE = "4-1"; //강의계획서 파일 전송 요청 응답
+
     public static final String CS_REQ_SYLLABUS_FILE = "5-0"; //강의계획서 파일 전송
     public static final String SC_RES_SYLLABUS_FILE = "6-1"; //강의계획서 파일 전송 응답
+
     //담당 교과목 강의계획서 조회
     public static final String CS_REQ_MYSYLLABUS_VIEW = "7-3"; //담당교과목 강의계획서 조회 요청
     public static final String SC_RES_MYSYLLABUS_VIEW = "8-6"; //담당교과목 강의계획서 조회 요청 응답
@@ -172,8 +200,7 @@ public class Protocol {
     public static final String SC_RES_TEACHINGTABLE_VIEW = "8-A"; //담당교과목 시간표 조회 요청 응답
 
     //관리자
-
-    //교수 정보 조회 TODO:값이 똑같음
+    //교수 정보 조회
     public static final String CS_REQ_PROFESSOR_VIEW = "7-11"; //교수 정보 조회 요청
     public static final String SC_RES_PROFESSOR_VIEW = "8-0"; //교수 정보 조회 요청 응답
     //학생 정보 조회
@@ -215,7 +242,7 @@ public class Protocol {
     public static final String CS_REQ_LECTURE_DELETE = "B-6"; //개설교과목 삭제 요청
     public static final String SC_RES_LECTURE_DELETE = "C-E"; //개설교과목 삭제 요청 응답
 
-   //강의계획서 입력/학년별 수강신청 기간 설정
+    //강의계획서 입력/학년별 수강신청 기간 설정
     public static final String CS_REQ_SYLLABUSPERIOD_ENROLL = "9-5"; //강의계획서 입력 기간 등록 요청
     public static final String SC_RES_SYLLABUSPERIOD_ENROLL = "A-A"; //강의계획서 입력 기간 등록 요청 응답
     public static final String CS_REQ_REGISTRATIONPERIOD_ENROLL = "9-6"; //수강신청 기간 등록 요청
@@ -227,13 +254,13 @@ public class Protocol {
 
     public void setPacket (String[] stringValue)
     {
-       int size = stringValue.length;
-       packet += protocolType + splitter;
+        int size = stringValue.length;
+        packet += protocolType + splitter;
 
-       for(int i=0 ; i<size ; i++) {
-           if(i == size-1) packet += stringValue[i];
-           else packet += stringValue[i] + splitter;
-       }
+        for(int i=0 ; i<size ; i++) {
+            if(i == size-1) packet += stringValue[i];
+            else packet += stringValue[i] + splitter;
+        }
     }
 
     public String getPacket(String protocolType) { return packet; }
