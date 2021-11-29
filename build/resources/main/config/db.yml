@@ -1,4 +1,4 @@
 DRIVER_CLASS = com.mysql.cj.jdbc.Driver
 DB_USER = root
 DB_CONNECTION_URL = jdbc:mysql://localhost/lecture_registration?characterEncoding=utf8&serverTimezone=UTC&useSSL = false
-DB_PWD = 20180017
+DB_PWD = alswhd11

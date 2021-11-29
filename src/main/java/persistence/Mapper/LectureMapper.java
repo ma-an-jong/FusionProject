@@ -37,12 +37,14 @@ public interface LectureMapper {
 
     @Select("SELECT * FROM Lecture JOIN SUBJECT ON lecture_idx = idx " +
             "JOIN PROFESSOR ON lecture_professor_idx = professor_idx" +
-            " WHERE pname = #{p_name}")
+            " WHERE professor_code = #{professor_code}")
     @ResultMap("JoinResultSet")
-    List<Lecture_Subject_ProfessorDTO> selectByProfessor(String p_name);
+    List<Lecture_Subject_ProfessorDTO> selectByProfessor(String professor_code);
 
     @Select("SELECT * FROM lecture JOIN subject ON lecture_idx = idx where subject_code = #{subject_code}")
     LectureDTO searchBySubjectCode(String subject_code);
+
+    //@Select("SELECT * FROM lecture")
 
 
 
@@ -51,6 +53,7 @@ public interface LectureMapper {
             " VALUE (#{lecture_idx},#{lecture_professor_idx},#{lecture_time},#{maximum},#{current},#{classroom})")
     void insertSubject(LectureDTO lectureDTO);
 
+    //@Insert("INSERT INTO lecture(syllabus) VALUE (#{syllabus}) ")
 
     //update
     // 담당교수 변경

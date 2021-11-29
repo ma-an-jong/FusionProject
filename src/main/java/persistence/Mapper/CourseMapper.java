@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface CourseMapper {
 
-    @Select( "SELECT * FROM Course_Details JOIN Lecture ON lecture_idx = cd_lecture_idx " +
+    @Select( "SELECT * FROM Course_Details JOIN SUBJECT ON subject.idx = cd_lecture_idx " +
+            "JOIN Lecture ON lecture_idx = cd_lecture_idx " +
             "JOIN Student ON student_idx = cd_student_idx WHERE student_code = #{myCode}")
     @Results(id = "ResultSet", value = {
             @Result(property = "lecture_idx", column = "lecture_idx"), //subject_id
@@ -22,6 +23,7 @@ public interface CourseMapper {
             @Result(property = "name", column = "sname"),
             @Result(property = "grade", column = "grade"),
             @Result(property = "phone", column = "phone"),
+            @Result(property = "subject_name", column = "name")
     })
     public List<CourseDetailsDTO> selectMyCourse(String myCode);
 

@@ -53,20 +53,20 @@ public class Lecture_Subject_ProfessorDTO {
     // 출력메소드
     public String printInfo(){
 
-        return "[" + subject_name + "]\n\n"
-                +"== 과목정보 ==\n"
-                + "과목명: " + subject_name + "\n"
-                + "과목코드: " + subject_code + "\n"
-                + "강의실: " + classroom + "\n"
-                + "강의시간: " + lecture_time + "\n"
-                + "신청가능 학년: " + grade + "\n\n"
-                + "신청가능여부: [" + activity + "]\n"
-                + "수강가능인원: " + maximum + "\n"
-                + "현재수강신청인원: " + current + "\n\n"
-                + "== 담당교수 정보 ==\n"
-                + "교수명: " + professor_name + "\n"
-                + "학과: " + department + "\n"
-                + "연락처: " + phone + "\n"
+        return "[" + subject_name + "]"
+                +"== 과목정보 =="
+                + "과목명: " + subject_name + " "
+                + "과목코드: " + subject_code + " "
+                + "강의실: " + classroom + " "
+                + "강의시간: " + lecture_time + " "
+                + "신청가능 학년: " + grade + "  "
+                + "신청가능여부: [" + activity + "] "
+                + "수강가능인원: " + maximum + " "
+                + "현재수강신청인원: " + current + "  "
+                + "== 담당교수 정보 == "
+                + "교수명: " + professor_name + " "
+                + "학과: " + department + " "
+                + "연락처: " + phone + " "
                 ;
 
     }

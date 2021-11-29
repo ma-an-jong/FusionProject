@@ -52,7 +52,7 @@ public class UserDAO {
                 System.out.println("ROLLBACK 실패");
             }
         }
-    return idx;
+        return idx;
     }
 
     public List<StudentDTO> selectAllStudent(){
@@ -63,7 +63,7 @@ public class UserDAO {
 
         try{
             stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT *  FROM STUDENT");
+            rs = stmt.executeQuery("SELECT *  FROM STUDENT Join User on idx = student_idx");
             System.out.println("select 성공");
         }
         catch (SQLException e )
@@ -75,7 +75,8 @@ public class UserDAO {
         try{
             while(rs.next()){
                 dto = new StudentDTO();
-
+                dto.setId(rs.getString("id"));
+                dto.setPassword(rs.getString("password"));
                 dto.setStudent_idx(rs.getInt("student_idx"));
                 dto.setDepartment(rs.getString("department"));
                 dto.setStudent_code(rs.getString("student_code"));
@@ -108,7 +109,7 @@ public class UserDAO {
         Statement stmt = null;
         try{
             stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT *  FROM PROFESSOR");
+            rs = stmt.executeQuery("SELECT *  FROM PROFESSOR JOIN User on idx = professor_idx");
             System.out.println("select 성공");
 
         }
@@ -121,7 +122,8 @@ public class UserDAO {
         try{
             while(rs.next()){
                 dto = new ProfessorDTO();
-
+                dto.setId(rs.getString("id"));
+                dto.setPassword(rs.getString("password"));
                 dto.setProfessor_idx(rs.getInt("professor_idx"));
                 dto.setDepartment(rs.getString("department"));
                 dto.setPname(rs.getString("pname"));
@@ -201,12 +203,28 @@ public class UserDAO {
         Statement stmt = null;
         try{
             stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT *  FROM User");
+            rs = stmt.executeQuery("SELECT *  FROM USER");
             System.out.println("select 성공");
         }
         catch (SQLException e )
         {
             System.out.println("select 실패");
+        }
+        UserDTO dto = null;
+        try{
+            while(rs.next()){
+                dto = new UserDTO();
+
+                dto.setIdx(rs.getInt("idx"));
+                dto.setId(rs.getString("id"));
+                dto.setPassword(rs.getString("password"));
+                dto.setCategory(rs.getString("category").charAt(0));
+                list.add(dto);
+            }
+        }
+        catch (SQLException e){
+            System.out.println("값 복사도중 오류발생");
+            e.printStackTrace();
         }
 
         try{
@@ -220,7 +238,47 @@ public class UserDAO {
 
         return list;
     }
-    
+
+    //updateAccount
+    public boolean updateAccount(int user_idx, String newId, String newPw){
+        PreparedStatement pstmt = null;
+
+        try{
+            pstmt = conn.prepareStatement("UPDATE user SET id = ?, password = ? WHERE idx = ?");
+            pstmt.setString(1, newId);
+            pstmt.setString(2 , newPw);
+            pstmt.setInt(3, user_idx);
+
+            pstmt.executeUpdate();
+            conn.commit();
+            System.out.println("회원정보가 변경되었습니다.");
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+            System.out.println("COMMIT 실패");
+
+            try{
+                conn.rollback();
+                System.out.println("ROLLBACK 성공");
+            }
+            catch (SQLException e){
+                e.printStackTrace();
+                System.out.println("ROLLBACK 실패");
+            }
+            return false;
+        }
+
+        try{
+            pstmt.close();
+        }
+        catch (SQLException e ){
+            System.out.println("close 실패");
+        }
+        return true;
+    }
+
+
     //4.교수랑 학생을 교번이랑 학번으로 찾아서 조회하는 메소드 필요
     // => 교번으로 교수찾기, 학번으로 학생찾기 2개로 따로 진행
     //    public List<StudentDTO> selectStudentWithCode(){

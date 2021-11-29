@@ -18,12 +18,11 @@ public class TestClient {
         }
 
         try{
-            Socket socket = new Socket("192.168.0.96",5000);
+            Socket socket = new Socket("218.150.26.129",5000);
             System.out.println("성공");
 
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-
         }
         catch (Exception e){
             System.out.println("응 안돼");

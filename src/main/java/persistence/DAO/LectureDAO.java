@@ -63,13 +63,13 @@ public class LectureDAO {
     }
 
     //교수가 담당한 교과목 조회
-    public List<Lecture_Subject_ProfessorDTO> selectByProfessor(String p_name){
+    public List<Lecture_Subject_ProfessorDTO> selectByProfessor(String professor_code){
         List<Lecture_Subject_ProfessorDTO> list = null;
 
         try(SqlSession session = sqlSessionFactory.openSession()){
             LectureMapper mapper = session.getMapper(LectureMapper.class);
 
-            list = mapper.selectByProfessor(p_name);
+            list = mapper.selectByProfessor(professor_code);
 
 
             for(Lecture_Subject_ProfessorDTO dto : list){
@@ -105,30 +105,41 @@ public class LectureDAO {
 
     // selectBySubjectCode
     public LectureDTO searchBySubjectCode(String subject_code){
-        LectureDTO list = null;
+        LectureDTO dto = null;
 
         try(SqlSession session = sqlSessionFactory.openSession()){
             LectureMapper mapper = session.getMapper(LectureMapper.class);
 
-            list = mapper.searchBySubjectCode(subject_code);
+            dto = mapper.searchBySubjectCode(subject_code);
 
         }
         catch (Exception e){
             e.printStackTrace();
         }
 
-        return list;
+        return dto;
+    }
+
+    // 강의계획서 조회
+    public String searchSyllabusBySubjectCode(String subject_code){
+        LectureDTO dto = searchBySubjectCode(subject_code);
+        String Syllabus = null;
+        if(dto.getSyllabus().length() > 0){
+            Syllabus = dto.getSyllabus();
+        }
+
+        return Syllabus;
     }
 
 
     //================================================================
     //========================== INSERT ==============================
     //================================================================
-    public void insertSubject(LectureDTO lectureDTO) {
+    public boolean insertSubject(LectureDTO lectureDTO) {
 
         SqlSession session = sqlSessionFactory.openSession();
         LectureMapper mapper = session.getMapper(LectureMapper.class);
-
+        boolean flag = true;
         try{
             mapper.insertSubject(lectureDTO);
             session.commit();
@@ -137,12 +148,35 @@ public class LectureDAO {
         catch (Exception e){
             e.printStackTrace();
             session.rollback();
+            flag = false;
         }
         finally {
             session.close();
-
         }
+        return flag;
+    }
 
+    // 강의계획서 create + update
+    public void updateSyllabus(String subject_code, String newSyllabus){
+        String syllabus = searchSyllabusBySubjectCode(subject_code);
+
+
+
+        SqlSession session = sqlSessionFactory.openSession();
+        LectureMapper mapper = session.getMapper(LectureMapper.class);
+
+
+
+        try{
+            if(syllabus == null){
+
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            session.rollback();
+        }finally {
+            session.close();
+        }
     }
 
 
@@ -190,6 +224,7 @@ public class LectureDAO {
 //            session.close();
 //        }
 //    }
+
     // 과목코드로 강의실 변경
     public void updateSubjectByClassRoom(String classroom,String subject_code){
         SqlSession session = sqlSessionFactory.openSession();
@@ -253,9 +288,10 @@ public class LectureDAO {
     //========================== DELETE ==============================
     //================================================================
     // 과목코드로 lecture 삭제하기
-    public void deleteLectureBySubjectCode(String subject_code){
+    public boolean deleteLectureBySubjectCode(String subject_code){
         SqlSession session = sqlSessionFactory.openSession();
         LectureMapper mapper = session.getMapper(LectureMapper.class);
+        boolean flag = true;
 
         try{
             mapper.deleteLectureBySubjectCode(subject_code);
@@ -265,10 +301,12 @@ public class LectureDAO {
         catch (Exception e){
             e.printStackTrace();
             session.rollback();
+            flag = false;
         }
         finally {
             session.close();
         }
+        return flag;
     }
 
 }
