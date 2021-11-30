@@ -16,9 +16,9 @@
 
     <!-- select paging-->
         <select id = "selectWithPaging" resultMap = "courseResult">
-            SELECT student_idx,student_code,sname,department,grade,phone
+            SELECT student_idx,student_code,sname,department,student.grade,phone
             FROM course_details join student on student_idx = cd_student_idx
-                                join subject on cd_lecture_idx = idx
+                                join subject on cd_lecture_idx = subject.idx
             WHERE subject_code = #{subject_code}
             LIMIT #{pageNum},2
     </select>
