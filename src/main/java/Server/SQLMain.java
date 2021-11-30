@@ -19,24 +19,28 @@ public class SQLMain {
         Connection conn = JDBCConnection.getConnection(JDBCConnection.url);
         SqlSessionFactory sqlSessionFactory = MyBatisConnectionFactory.getSqlSessionFactory();
 
-        LectureRegistrationDateDAO dao = new LectureRegistrationDateDAO(sqlSessionFactory);
+        AdminDAO adminDAO = new AdminDAO(conn);
+        adminDAO.createProfessor("2777",
+            "8475","기계공학과" ,"리처드 파인만","010-3141-4122");
 
-
-        SimpleDateFormat sdf=new SimpleDateFormat("2021-10-11");
-        String ss=sdf.format(new java.util.Date());
-        Date sd= Date.valueOf(ss);
-
-         sdf=new SimpleDateFormat("2021-12-25");
-         ss=sdf.format(new java.util.Date());
-        Date ed= Date.valueOf(ss);
-
-
-
-
-        dao.setSeason(1,sd,ed);
-        dao.setSeason(2,sd,ed);
-        dao.setSeason(3,sd,ed);
-        dao.setSeason(4,sd,ed);
+//        LectureRegistrationDateDAO dao = new LectureRegistrationDateDAO(sqlSessionFactory);
+//
+//
+//        SimpleDateFormat sdf=new SimpleDateFormat("2021-10-11");
+//        String ss=sdf.format(new java.util.Date());
+//        Date sd= Date.valueOf(ss);
+//
+//         sdf=new SimpleDateFormat("2021-12-25");
+//         ss=sdf.format(new java.util.Date());
+//        Date ed= Date.valueOf(ss);
+//
+//
+//
+//
+//        dao.setSeason(1,sd,ed);
+//        dao.setSeason(2,sd,ed);
+//        dao.setSeason(3,sd,ed);
+//        dao.setSeason(4,sd,ed);
 
 //        SubjectDAO subjectDAO = new SubjectDAO(sqlSessionFactory);
 //        HashMap<String,Object> map = new HashMap<String,Object>();

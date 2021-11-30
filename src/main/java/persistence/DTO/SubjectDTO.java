@@ -16,10 +16,10 @@ public class SubjectDTO {
     // 출력
     public String printSubjectInfo(){
 
-        return "===== 강좌조회 ====="
-               + "[" + name + "] "
-               + "과목코드: " + subject_code + " "
-               + "해당 학년: " + grade + " "
+        return "===== 강좌조회 =====\t"
+               + "[" + name + "]\t"
+               + "과목코드: " + subject_code + "\t"
+               + "해당 학년: " + grade + "\t"
                ;
 
     }

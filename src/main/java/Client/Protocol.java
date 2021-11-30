@@ -15,7 +15,7 @@ public class Protocol {
         this.protocolType = protocolType;
         getPacket(protocolType);
     }
-
+    public static final String staticPath = "C:\\Users\\KIMMINJONG\\Desktop\\static\\";
     public static final int TYPE_DEFINED_POS = 0;
     public static final String splitter ="!@#%!@#%";
     public static final String PT_UNDEFINED = "undefined";
@@ -26,11 +26,11 @@ public class Protocol {
     public static final int PT_LOGIN_KEY_POS = 1;  //로그인 응답 학번/교번 위치
     public static final int PT_LOGIN_GRADE_POS = 2; //로그인 응답 학년 위치
     public static final int PT_LOGIN_CATEGORY_POS = 3; //로그인 응답 카테고리 위치
-
+    public static final int PT_LOGIN_CODE_POS = 4;
     //개인정보 수정 위치
-    public static final int PT_PERSONALINFO_ID_POS = 1;
-    public static final int PT_PERSONALINFO_PASSWORD_POS = 2;
-    public static final int PT_PERSONALINFO_CODE_POS = 3;
+    public static final int PT_PERSONALINFO_CODE_POS = 1;
+    public static final int PT_PERSONALINFO_ID_POS = 2;
+    public static final int PT_PERSONALINFO_PASSWORD_POS = 3;
     public static final int PT_PERSONALINFO_NAME_POS = 4;
     public static final int PT_PERSONALINFO_DEPARTMENT_POS = 5;
     public static final int PT_PERSONALINFO_PHONE_POS = 6;
@@ -45,29 +45,17 @@ public class Protocol {
 
     //학생 개인정보 조회 위치
     public static final int PT_PERSONALINFO_KEY_POS = 1;
-
-    //학생 수강 과목 조회 요청
-
-
+    
     //학생 본인 시간표 조회 요청 위치
     public static final int PT_TIMETABLE_KEY_POS = 1;
 
     //학생 -> 강의 계획서 조회
     public static final int PT_SYLLABUS_VIEW_KEY_POS= 1;
-    public static final int PT_SYLLABUS_VIEW_CONTEXT_POS = 2;
+    public static final int PT_SYLLABUS_VIEW_CONTEXT_POS = 1;
 
     //교수 -> 강의 계획서 등록
     public static final int PT_SYLLABUS_FILE_KEY_POS= 1;
     public static final int PT_SYLLABUS_FILE_CONTEXT_POS= 2;
-
-    //교수 -> 강의 계획서 등록인증
-    public static final int PT_SYLLABUS_ENROLL_STARTDATE_POS = 1;
-    public static final int PT_SYLLABUS_ENROLL_ENDDATE_POS = 2;
-
-    //강의 계획서 조회
-
-    //개설 교과목 목록 조회
-    //딱히 필요한 정보 없음
 
     //교수담당과목 조회 관련 위치
     public static final int PT_TEACHING_KEY_POS = 1;
@@ -114,8 +102,10 @@ public class Protocol {
 
     //관리자가 //교과목 수정 요청
     public static final int PT_LECTURE_KEY_POS= 1;
+
     public static final int PT_LECTURE_CLASSROOM_POS= 2;
     public static final int PT_LECTURE_MAXIMUM_POS= 3;
+    public static final int PT_LECTURE_PROFESSOR_POS = 4;
 
     //수강신청 기간 등록 요청
     public static final int PT_REGISTRATIONPERIOD_GRADE_POS = 1;
@@ -179,12 +169,14 @@ public class Protocol {
     //담당 교과목 목록 조회
     public static final String CS_REQ_TEACHING_VIEW = "7-2"; //담당 교과목 목록 조회
     public static final String SC_RES_TEACHING_VIEW = "8-4"; //담당 교과목 목록 조회 응답
-    //강의계획서 등록,수정
+    
+    //강의계획서 등록,삭제
     public static final String CS_REQ_SYLLABUS_ENROLL = "9-2"; //담당 교과목 강의계획서 등록 요청
     public static final String SC_RES_SYLLABUS_ENROLL = "A-0"; //담당 교과목 강의계획서 등록 요청 응답
 
-    public static final String CS_REQ_SYLLABUS_SENDFILE = "3-0"; //강의계획서 파일 전송 요청
-    public static final String SC_RES_SYLLABUS_SENDFILE = "4-1"; //강의계획서 파일 전송 요청 응답
+    public static final String CS_REQ_SYLLABUS_DELETE = "9-11"; //담당 교과목 강의계획서 삭제 요청
+    public static final String SC_RES_SYLLABUS_DELETE = "B-14"; //담당 교과목 강의 계획서 삭제 응답
+
 
     public static final String CS_REQ_SYLLABUS_FILE = "5-0"; //강의계획서 파일 전송
     public static final String SC_RES_SYLLABUS_FILE = "6-1"; //강의계획서 파일 전송 응답

@@ -21,18 +21,21 @@ import java.util.List;
 
 public class ServerThread extends Thread {
     private static int clientNum = 0;
+    private static HashMap<String,Boolean> duplicatedMap = new HashMap<String,Boolean>();
+
 
     private Connection jdbcConn; //JDBC 연결
     private SqlSessionFactory sqlSessionFactory; //MYBATIS 연결
     private Socket socket;
+
     private BufferedReader in = null;
     private BufferedWriter out = null;
 
     public ServerThread(Socket socket)
     {
         this.socket = socket;
-        jdbcConn = JDBCConnection.getConnection(JDBCConnection.url);
-        sqlSessionFactory =  MyBatisConnectionFactory.getSqlSessionFactory();
+        jdbcConn = JDBCConnection.getConnection(JDBCConnection.url); //JDBC connetion
+        sqlSessionFactory =  MyBatisConnectionFactory.getSqlSessionFactory(); //MyBatis Connection
         System.out.println("서버 Thread 생성");
     }
 
@@ -44,6 +47,7 @@ public class ServerThread extends Thread {
 
         try
         {
+            //입출력 버퍼 연결
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         }
@@ -54,11 +58,9 @@ public class ServerThread extends Thread {
         }
 
         boolean flag = true;
-
-        // TODO:초기 프로토콜상태 무시??
         Protocol protocol;
         String packetType;
-        String packet[] = new String[1000];
+        String packet[];
 
         while (flag)
         {
@@ -77,25 +79,28 @@ public class ServerThread extends Thread {
             //case문 시작
             switch (packetType)
             {
-                case Protocol.PT_EXIT:
+                case Protocol.PT_EXIT: //클라이언트 종료
                 {
-                    writePacket(Protocol.PT_EXIT);
+
                     flag = false;
                     clientNum--;
-                    System.out.println("서버종료");
-                    System.out.println("현재 클라이언트 수:" + clientNum);
+                    packet = new String[1];
+                    packet[0] = "0";
+                    protocol = new Protocol(Protocol.PT_EXIT);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+                    System.out.println("클라이언트 종료");
                     break;
                 }
                 case Protocol.PT_REQ_LOGIN: //로그인 요청 Clear
                 {
                     System.out.println("클라이언트가 로그인 정보를 보냈습니다.");
-
+                    //데이터 얻어오기
                     String id = packet[Protocol.PT_LOGIN_ID_POS];
                     String password = packet[Protocol.PT_LOGIN_PASSWORD_POS];
 
                     UserDAO userDAO = new UserDAO(jdbcConn);
                     List<UserDTO> userList = userDAO.selectAllUser();
-                    System.out.println(userList.size());
                     boolean except = true;
 
                     for(UserDTO dto : userList)
@@ -103,7 +108,7 @@ public class ServerThread extends Thread {
                         if(dto.getId().equals(id) && dto.getPassword().equals(password) )
                         {
                             except = false;
-                            packet = new String[4];
+                            packet = new String[5];
                             if(dto.getCategory() == 'a')
                             {
                                 packet[0] = "2";
@@ -118,6 +123,7 @@ public class ServerThread extends Thread {
                                 packet[Protocol.PT_LOGIN_KEY_POS] = studentDTO.getStudent_code();
                                 packet[Protocol.PT_LOGIN_GRADE_POS] = String.valueOf(studentDTO.getGrade());
                                 packet[Protocol.PT_LOGIN_CATEGORY_POS] ="s";
+                                packet[Protocol.PT_LOGIN_CODE_POS] = studentDTO.getStudent_code();
                                 System.out.println("학생 인증 성공");
                             }
                             else if(dto.getCategory() == 'p')
@@ -127,6 +133,7 @@ public class ServerThread extends Thread {
                                 packet[0] = "1";
                                 packet[Protocol.PT_LOGIN_KEY_POS] = professorDTO.getProfessor_code();
                                 packet[Protocol.PT_LOGIN_CATEGORY_POS] ="p";
+                                packet[Protocol.PT_LOGIN_CODE_POS] = professorDTO.getProfessor_code();
                                 System.out.println("교수 인증 성공");
                             }
                             else
@@ -338,19 +345,30 @@ public class ServerThread extends Thread {
                     break;
 
                 }
-                case Protocol.CS_REQ_PROFESSOR_PERSONALINFO_UPDATE: //교수 개인정보 업뎃 Clear //값수정필요
+                case Protocol.CS_REQ_PROFESSOR_PERSONALINFO_UPDATE: //교수 개인정보 업뎃 Clear
                 {
-                    ProfessorDTO professorDTO = new ProfessorDTO();
-                    String id = packet[Protocol.PT_PERSONALINFO_ID_POS];professorDTO.setId(id);
-                    String password = packet[Protocol.PT_PERSONALINFO_PASSWORD_POS];professorDTO.setPassword(password);
-                    String key = packet[Protocol.PT_PERSONALINFO_CODE_POS];professorDTO.setProfessor_code(key);
-                    String name = packet[Protocol.PT_PERSONALINFO_NAME_POS];professorDTO.setPname(name);
-                    String dept = packet[Protocol.PT_PERSONALINFO_DEPARTMENT_POS];professorDTO.setDepartment(dept);
-                    String phone = packet[Protocol.PT_PERSONALINFO_PHONE_POS];professorDTO.setPhone(phone);
-
                     ProfessorDAO dao = new ProfessorDAO(jdbcConn);
+                    String key = packet[Protocol.PT_PERSONALINFO_CODE_POS];
+                    ProfessorDTO pDTO = dao.searchByProfessor_code(key);
+
+                    if(!packet[Protocol.PT_PERSONALINFO_ID_POS].equals("null"))
+                        pDTO.setId(packet[Protocol.PT_PERSONALINFO_ID_POS]);
+
+                    if(!packet[Protocol.PT_PERSONALINFO_PASSWORD_POS].equals("null"))
+                        pDTO.setPassword( packet[Protocol.PT_PERSONALINFO_PASSWORD_POS]);
+
+                    if(!packet[Protocol.PT_PERSONALINFO_NAME_POS].equals("null"))
+                        pDTO.setPname(packet[Protocol.PT_PERSONALINFO_NAME_POS]);
+
+                    if(!packet[Protocol.PT_PERSONALINFO_DEPARTMENT_POS].equals("null"))
+                        pDTO.setDepartment(packet[Protocol.PT_PERSONALINFO_DEPARTMENT_POS]);
+
+                    if(!packet[Protocol.PT_PERSONALINFO_PHONE_POS].equals("null")){
+                        pDTO.setPhone(packet[Protocol.PT_PERSONALINFO_PHONE_POS]);
+                    }
+
                     String code;
-                    if(dao.updateProfessorInfo(professorDTO)){
+                    if(dao.updateProfessorInfo(pDTO)){
                         code = "0";
                     }
                     else
@@ -366,18 +384,25 @@ public class ServerThread extends Thread {
                     break;
 
                 }
-                case Protocol.CS_REQ_STUDENT_PERSONALINFO_UPDATE: //학생 개인정보 업데이트  Clear   //값수정필요
+                case Protocol.CS_REQ_STUDENT_PERSONALINFO_UPDATE: //학생 개인정보 업데이트  Clear   //값수정필요 학생
                 {
-                    StudentDTO studentDTO = new StudentDTO();
-                    String id = packet[Protocol.PT_PERSONALINFO_ID_POS];studentDTO.setId(id);
-                    String password = packet[Protocol.PT_PERSONALINFO_PASSWORD_POS];studentDTO.setPassword(password);
-                    String key = packet[Protocol.PT_PERSONALINFO_CODE_POS];studentDTO.setStudent_code(key);
-                    String name = packet[Protocol.PT_PERSONALINFO_NAME_POS];studentDTO.setSname(name);
-                    String dept = packet[Protocol.PT_PERSONALINFO_DEPARTMENT_POS];studentDTO.setDepartment(dept);
-                    String phone = packet[Protocol.PT_PERSONALINFO_PHONE_POS];studentDTO.setPhone(phone);
-                    int grade = Integer.parseInt(packet[Protocol.PT_PERSONALINFO_GRADE_POS]);studentDTO.setGrade(grade);
-
                     StudentDAO dao = new StudentDAO(jdbcConn);
+
+                    String key = packet[Protocol.PT_PERSONALINFO_CODE_POS];
+                    StudentDTO studentDTO = dao.searchByStudent_code(key);
+                    if(!packet[Protocol.PT_PERSONALINFO_ID_POS].equals("null"))
+                        studentDTO.setId(packet[Protocol.PT_PERSONALINFO_ID_POS]);
+                    if(!packet[Protocol.PT_PERSONALINFO_PASSWORD_POS].equals("null"))
+                        studentDTO.setPassword(packet[Protocol.PT_PERSONALINFO_PASSWORD_POS]);
+                    if(!packet[Protocol.PT_PERSONALINFO_NAME_POS].equals("null"))
+                        studentDTO.setSname(packet[Protocol.PT_PERSONALINFO_NAME_POS]);
+                    if(!packet[Protocol.PT_PERSONALINFO_DEPARTMENT_POS].equals("null"))
+                        studentDTO.setDepartment(packet[Protocol.PT_PERSONALINFO_DEPARTMENT_POS]);
+                    if(!packet[Protocol.PT_PERSONALINFO_PHONE_POS].equals("null"))
+                        studentDTO.setPhone(packet[Protocol.PT_PERSONALINFO_PHONE_POS]);
+                    if(!packet[Protocol.PT_PERSONALINFO_GRADE_POS].equals("null"))
+                        studentDTO.setGrade(Integer.parseInt(packet[Protocol.PT_PERSONALINFO_GRADE_POS]));
+
                     String code;
 
                     if(dao.updateStudentInfo(studentDTO))
@@ -429,7 +454,7 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_LECTURE_VIEW: //개설 교과목 목록 조회 TODO: Clear 출력 살짝?
+                case Protocol.CS_REQ_LECTURE_VIEW: //개설 교과목 목록 조회 Clear TODO:  \t -> \n replaceAll
                 {
                     LectureDAO dao = new LectureDAO(sqlSessionFactory);
                     List<Lecture_Subject_ProfessorDTO> list = dao.selectAll();
@@ -439,8 +464,7 @@ public class ServerThread extends Thread {
 
                     for(Lecture_Subject_ProfessorDTO dto : list)
                     {
-                        packet[index]  = dto.printInfo();
-                        index ++;
+                        packet[index++]  = dto.printInfo();
                     }
 
                     packet[0] = list != null ? "C" : "D";
@@ -450,7 +474,7 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_SYLLABUS_VIEW: //강의 계획서 조회 by과목코드
+                case Protocol.CS_REQ_SYLLABUS_VIEW: //강의 계획서 조회 학생
                 {
                     String key = packet[Protocol.PT_SYLLABUS_VIEW_KEY_POS];
                     LectureDAO lectureDAO = new LectureDAO(sqlSessionFactory);
@@ -458,12 +482,12 @@ public class ServerThread extends Thread {
                     String path = lectureDAO.searchSyllabusBySubjectCode(key);
                     String code = "E";
                     String context = new String();
-                    try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)
-                            ,"UTF-8")))
+                    try (BufferedReader br = new BufferedReader(
+                                             new InputStreamReader(
+                                             new FileInputStream(path),"UTF-8")))
                     {
                         context = new String();
                         int s;
-
                         while((s = br.read()) != -1 )
                         {
                             context += (char)s;
@@ -483,7 +507,7 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_TEACHING_VIEW: //담당 교과목 목록 조회 Clear
+                case Protocol.CS_REQ_TEACHING_VIEW: //담당 교과목 목록 조회 Clear TODO \t -> \n replaceAll
                 {
                     LectureDAO dao = new LectureDAO(sqlSessionFactory);
                     String key = packet[Protocol.PT_TEACHING_KEY_POS];
@@ -504,7 +528,7 @@ public class ServerThread extends Thread {
                     System.out.println("교수 담당 과목 조회");
                     break;
                 }
-                case Protocol.CS_REQ_SYLLABUS_ENROLL: //강의 계획서 등록기간 인증
+                case Protocol.CS_REQ_SYLLABUS_ENROLL: //강의 계획서 등록기간 인증 Clear
                 {
                     SyllabusInsertTimeDAO dao = new SyllabusInsertTimeDAO(sqlSessionFactory);
                     SyllabusInsertTimeDTO dto = dao.selectAll();
@@ -531,31 +555,105 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_SYLLABUS_FILE: // 강의 계획서 등록 
-                    // TODO:메소드 부족 -> bool 지정
+                case Protocol.CS_REQ_SYLLABUS_FILE: // 강의 계획서 등록  교수 Clear
                 {
                     String code = packet[Protocol.PT_SYLLABUS_FILE_KEY_POS];
                     String context = packet[Protocol.PT_SYLLABUS_FILE_CONTEXT_POS];
+                    String path = Protocol.staticPath + code + ".txt";
+                    System.out.println(context);
 
                     LectureDAO lectureDAO = new LectureDAO(sqlSessionFactory);
 
-                    //lectureDAO.updateSyllabus(code,context);
-
+                    boolean bool = lectureDAO.updateSyllabus(code,path);
                     packet = new String[1];
-                    packet[0] = "2";
+
+                    if(!bool){
+                        packet[0] = "3";
+                        protocol = new Protocol(Protocol.SC_RES_SYLLABUS_ENROLL);
+                        protocol.setPacket(packet);
+                        writePacket(protocol.getPacket());
+                        break;
+                    }
+
+                    try (BufferedWriter bw = new BufferedWriter(
+                                             new OutputStreamWriter(
+                                             new FileOutputStream(path),"UTF-8")))
+                    {
+                        bw.write(context);
+                        bw.flush();
+                        packet[0] = "2";
+                    }
+                    catch (IOException e)
+                    {
+                        packet[0] = "3";
+                        System.out.println("파일 입출력 실패");
+                    }
+
                     protocol = new Protocol(Protocol.SC_RES_SYLLABUS_ENROLL);
                     protocol.setPacket(packet);
                     writePacket(protocol.getPacket());
                     break;
 
                 }
-                case Protocol.CS_REQ_MYSYLLABUS_VIEW: //담당교과목 강의계획서 조회 요청
-                    //TODO : 전체 출력?? pass
+                case Protocol.CS_REQ_SYLLABUS_DELETE : //강의 계획서 삭제 교수 TODO: 메소드 부족
                 {
+                    String code = packet[Protocol.PT_SYLLABUS_FILE_KEY_POS];
+
+                    LectureDAO lectureDAO = new LectureDAO(sqlSessionFactory);
+                    String path = lectureDAO.deleteSyllabusBySubjectCode(code);
+                    System.out.println(path);
+                    File file = new File(path);
+                    packet = new String[1];
+                    if(file.exists()){
+                        file.delete();
+                        packet[0] = "0";
+                    }
+                    else{
+                        packet[0] = "1";
+                    }
+
+                    protocol = new Protocol(Protocol.SC_RES_SYLLABUS_DELETE);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
                     break;
                 }
+                case Protocol.CS_REQ_MYSYLLABUS_VIEW: //담당교과목 강의계획서 조회 요청 교수 Clear
+                {
+                    String key = packet[Protocol.PT_SYLLABUS_VIEW_KEY_POS];
+                    LectureDAO lectureDAO = new LectureDAO(sqlSessionFactory);
+
+                    String path = lectureDAO.searchSyllabusBySubjectCode(key);
+                    String code = "E";
+                    String context = new String();
+                    try (BufferedReader br = new BufferedReader(
+                            new InputStreamReader(
+                                    new FileInputStream(path),"UTF-8")))
+                    {
+                        context = new String();
+                        int s;
+
+                        while((s = br.read()) != -1 )
+                        {
+                            context += (char)s;
+                        }
+
+                    }
+                    catch (IOException e)
+                    {
+                        code = "F";
+                    }
+
+                    packet = new String[2];
+                    packet[0] = code;
+                    packet[Protocol.PT_SYLLABUS_VIEW_CONTEXT_POS] = context;
+                    protocol = new Protocol(Protocol.SC_RES_MYSYLLABUS_VIEW);
+                    protocol.setPacket(packet);
+                    writePacket(protocol.getPacket());
+                    break;
+
+                }
                 case Protocol.CS_REQ_MYSTUDENT_VIEW:  //담당교과목 수강신청 학생 목록 조회 요청
-                    //TODO : 페이징 기능
+                    //TODO : 페이징 기능 \t -> \n replaceAll
                 {
                     String key = packet[Protocol.PT_MYSTUDENT_KEY_POS];
                     int pageNum = Integer.parseInt(packet[Protocol.PT_MYSTUDENT_PAGENUM_POS]);
@@ -609,7 +707,7 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_PROFESSOR_VIEW://교수 정보 조회 요청 Clear
+                case Protocol.CS_REQ_PROFESSOR_VIEW://교수 정보 조회 요청 Clear TODO \t -> \n replaceAll
                 {
                     String key = packet[Protocol.PT_MEMBER_VIEW_KEY_POS];
                     ProfessorDAO professorDAO = new ProfessorDAO(jdbcConn);
@@ -623,7 +721,7 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_STUDENT_VIEW://학생 정보 조회 요청 Clear
+                case Protocol.CS_REQ_STUDENT_VIEW://학생 정보 조회 요청 Clear TODO \t -> \n replaceAll
                 {
                     String key = packet[Protocol.PT_MEMBER_VIEW_KEY_POS];
                     StudentDAO studentDAO = new StudentDAO(jdbcConn);
@@ -637,7 +735,7 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_ALLMEMBER_VIEW://모든 교수,학생 정보 조회 요청 Clear
+                case Protocol.CS_REQ_ALLMEMBER_VIEW://모든 교수,학생 정보 조회 요청 Clear TODO \t -> \n replaceAll
                 {
                     AdminDAO dao = new AdminDAO(jdbcConn);
                     List<ProfessorDTO> plist = dao.selectAllProfessor();
@@ -719,7 +817,7 @@ public class ServerThread extends Thread {
                     break;
 
                 }
-                case Protocol.CS_REQ_SUBJECT_VIEW: //전체 교과목 정보 요청 Clear
+                case Protocol.CS_REQ_SUBJECT_VIEW: //전체 교과목 정보 요청 Clear TODO \t -> \n replaceAll
                 {
                     SubjectDAO subjectDAO = new SubjectDAO(sqlSessionFactory);
                     List<SubjectDTO> list = subjectDAO.selectAll();
@@ -736,20 +834,21 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_LECTUREINFO_VIEW: //개설 교과목 정보 조회 요청 TODO: 전체출력으로 고치기
+                case Protocol.CS_REQ_LECTUREINFO_VIEW: //개설 교과목 정보 조회 요청
+                    // TODO: 전체출력으로 고치기 TODO \t -> \n replaceAll
                 {
-                    String key = packet[Protocol.PT_LECTUREINFO_KEY_POS];
+                    LectureDAO lectureDAO = new LectureDAO(sqlSessionFactory);
+                    List<Lecture_Subject_ProfessorDTO> list = lectureDAO.selectAll();
 
-                    CourseRegistration dao = new CourseRegistration(sqlSessionFactory);
-                    CourseDetailsDTO dto = dao.selectCourseByCode(key);
+                    packet = new String[list.size() + 1];
+                    packet[0] = list != null ? "2" : "3";
 
-                    ProfessorDAO professorDAO = new ProfessorDAO(jdbcConn);
-                    int pIdx = dto.getLecture_professor_idx();
+                    int index = 1;
+                    for(Lecture_Subject_ProfessorDTO dto : list)
+                    {
+                        packet[index++] = dto.printInfo();
+                    }
 
-                    ProfessorDTO professorDTO = professorDAO.searchByProfessor_idx(pIdx);
-                    packet = new String[2];
-                    packet[0] = professorDTO != null || dto != null ? "2" : "3";
-                    packet[1] = dto.getLectureInfo() + professorDTO.getProfessorInfoForAdmin() ;
                     protocol = new Protocol(Protocol.SC_RES_LECTUREINFO_VIEW);
                     protocol.setPacket(packet);
                     writePacket(protocol.getPacket());
@@ -824,9 +923,7 @@ public class ServerThread extends Thread {
                     break;
 
                 }
-                //TODO: 개설교과목 응답코드 추가 필요
                 case Protocol.CS_REQ_LECTURE_ENROLL: //개설 교과목 등록 Clear
-                    //TODO:응답코드 재확인 필요
                 {
                     SubjectDAO subjectDAO = new SubjectDAO(sqlSessionFactory);
                     ProfessorDAO professorDAO = new ProfessorDAO(jdbcConn);
@@ -866,18 +963,25 @@ public class ServerThread extends Thread {
                     break;
 
                 } 
-                case Protocol.CS_REQ_LECTURE_UPDATE: //개설 교과목 수정 TODO : bool 추가
-                    // TODO: 업데이트하는거 추가적으로 데이터 + 메소드 부족
+                case Protocol.CS_REQ_LECTURE_UPDATE: //개설 교과목 수정 관리자 Clear
                 {
                     LectureDAO lectureDAO = new LectureDAO(sqlSessionFactory);
                     String key = packet[Protocol.PT_LECTURE_KEY_POS];
+                    String classRoom = packet[Protocol.PT_LECTURE_CLASSROOM_POS];
+                    String max = packet[Protocol.PT_LECTURE_MAXIMUM_POS];
+                    String pCode = packet[Protocol.PT_LECTURE_PROFESSOR_POS];
 
-                   // lectureDAO.updateSubjectByClassRoom(); // 교실 변경
-                   // lectureDAO.updateSubjectByMaximum(); //최대 수강인원 갱신
-                    // TODO:12.담당교수가 변경되는 메소드 생성 필요.
+                    for(String s : packet){
+                        System.out.println(s);
+                    }
+
+                    boolean bool = true;
+                    if(!classRoom.equals("null")) bool = lectureDAO.updateSubjectByClassRoom(key,classRoom); // 교실 변경
+                    if(!max.equals("null") && bool) bool = lectureDAO.updateSubjectByMaximum(key,Integer.parseInt(max)); //최대 수강인원 갱신
+                    if(!pCode.equals("null") && bool) bool = lectureDAO.updateChangeProfessor(key,pCode); //교수 변경
 
                     packet = new String[1];
-                    packet[0] = "14";
+                    packet[0] = bool ? "14" : "15";
                     protocol = new Protocol(Protocol.SC_RES_LECTURE_UPDATE);
                     protocol.setPacket(packet);
                     writePacket(protocol.getPacket());
@@ -955,7 +1059,6 @@ public class ServerThread extends Thread {
 
         }
 
-    //방법론
     public void writePacket(String source)
     {
         try
@@ -969,5 +1072,12 @@ public class ServerThread extends Thread {
             System.out.println("write에 실패하였습니다.");
         }
     }
+
+    public void discountClient()
+    {
+        clientNum--;
+        System.out.println("현재 클라이언트 수:" + clientNum);
+    }
+
 
 }
