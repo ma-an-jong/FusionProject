@@ -5,8 +5,10 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import persistence.DTO.CourseDetailsDTO;
 import persistence.DTO.LectureDTO;
 import persistence.DTO.Lecture_Subject_ProfessorDTO;
+import persistence.DTO.ProfessorDTO;
 import persistence.Mapper.LectureMapper;
 
+import java.lang.invoke.LambdaConversionException;
 import java.util.List;
 
 public class LectureDAO {
@@ -17,9 +19,10 @@ public class LectureDAO {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
-    //================================================================
-    //========================== SELECT ==============================
-    //================================================================
+    //===========================================================================================================
+    // SELECT
+
+    // lecture 전제 조회
     public List<Lecture_Subject_ProfessorDTO> selectAll(){
         List<Lecture_Subject_ProfessorDTO> list = null;
 
@@ -40,8 +43,7 @@ public class LectureDAO {
         return list;
     }
 
-
-
+    // 학년으로 lecture 목록조회하기
     public List<Lecture_Subject_ProfessorDTO> selectByGrade(int grade){
         List<Lecture_Subject_ProfessorDTO> list = null;
 
@@ -131,10 +133,26 @@ public class LectureDAO {
         return Syllabus;
     }
 
+    // professor_code 로 professor_idx 찾기
+    public int searchProfessorIdxByProfessorCode(String professor_code){
+        int professor_idx = 0;
+
+        try(SqlSession session = sqlSessionFactory.openSession();){
+            LectureMapper mapper = session.getMapper(LectureMapper.class);
+            professor_idx = mapper.searchProfessorIdxByProfessorCode(professor_code);
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return professor_idx;
+    }
 
     //================================================================
     //========================== INSERT ==============================
     //================================================================
+
+    // lecture 추가하기
     public boolean insertSubject(LectureDTO lectureDTO) {
 
         SqlSession session = sqlSessionFactory.openSession();
@@ -157,53 +175,77 @@ public class LectureDAO {
     }
 
     // 강의계획서 create + update
-    public void updateSyllabus(String subject_code, String newSyllabus){
-        String syllabus = searchSyllabusBySubjectCode(subject_code);
+    public boolean updateSyllabus(String subject_code, String newSyllabus){
+        //String syllabus = searchSyllabusBySubjectCode(subject_code);
+        boolean flag = true;
+        LectureDTO dto = searchBySubjectCode(subject_code);
+        int lecture_idx = dto.getLecture_idx();
+        String syllabus = dto.getSyllabus();
 
+        if(syllabus != null){
+            flag = insertSyllabus(lecture_idx, newSyllabus);
+        }else {
+            flag = modifySyllabus(lecture_idx, newSyllabus);
+        }
+        return flag;
+    }
 
-
+    public boolean insertSyllabus(int lecture_idx, String newSyllabus){
         SqlSession session = sqlSessionFactory.openSession();
         LectureMapper mapper = session.getMapper(LectureMapper.class);
-
-
-
+        boolean flag = true;
         try{
-            if(syllabus == null){
-
-            }
+            mapper.insertSyllabus(lecture_idx, newSyllabus);
+            session.commit();
+            System.out.println("강의계획서 등록이 완료 되었습니다.");
         }catch(Exception e){
             e.printStackTrace();
             session.rollback();
+            flag = false;
+
         }finally {
             session.close();
         }
+
+        return flag;
     }
 
 
-    //================================================================
-    //========================== UPDATE ==============================
-    //================================================================
+    //===========================================================================================================
+    // UPDATE
 
     //담당교수 변경
-    public void updateChangeProfessor(int lecture_idx ,int professor_idx){
+    public boolean updateChangeProfessor(String subject_code ,String professor_code){
+
+        // lecture_idx 찾기
+        LectureDTO dto = searchBySubjectCode(subject_code);
+        int lectureIdx = dto.getLecture_idx();
+
+        // professor_idx찾기
+        int professorIdx = searchProfessorIdxByProfessorCode(professor_code);
+
+        return modifyProfessor(lectureIdx, professorIdx);
+    }
+
+    public boolean modifyProfessor(int lectureIdx, int professorIdx){
         SqlSession session = sqlSessionFactory.openSession();
         LectureMapper mapper = session.getMapper(LectureMapper.class);
-
+        boolean flag = true;
         try{
-            mapper.updateChangeProfessor(lecture_idx, professor_idx);
+            mapper.modifyProfessor(lectureIdx, professorIdx);
             session.commit();
             System.out.println("담당교수가 변경되었습니다.");
-        }
-        catch(Exception e){
+
+        }catch(Exception e){
             e.printStackTrace();
-            //System.out.println("담당교수 변경에 실패하였습니다.");
             session.rollback();
-        }
-        finally
-        {
+            flag = false;
+        }finally {
             session.close();
         }
+        return flag;
     }
+
 
     // lecture_idx로 강의실 변경
 //    public void updateSubjectByClassRoom(String classroom,int lecture_idx){
@@ -226,10 +268,10 @@ public class LectureDAO {
 //    }
 
     // 과목코드로 강의실 변경
-    public void updateSubjectByClassRoom(String classroom,String subject_code){
+    public boolean updateSubjectByClassRoom(String classroom,String subject_code){
         SqlSession session = sqlSessionFactory.openSession();
         LectureMapper mapper = session.getMapper(LectureMapper.class);
-
+        boolean flag = true;
         try{
             mapper.updateSubjectByClassRoom(classroom,subject_code);
             session.commit();
@@ -239,14 +281,16 @@ public class LectureDAO {
         catch(Exception e){
             e.printStackTrace();
             session.rollback();
+            flag = false;
         }
         finally{
             session.close();
         }
+        return flag;
     }
 
 
-//    public void updateSubjectByMaximum(int maximum,int lecture_idx){
+    //    public void updateSubjectByMaximum(int maximum,int lecture_idx){
 //        SqlSession session = sqlSessionFactory.openSession();
 //        LectureMapper mapper = session.getMapper(LectureMapper.class);
 //
@@ -264,10 +308,10 @@ public class LectureDAO {
 //            session.close();
 //        }
 //    }
-    public void updateSubjectByMaximum(int maximum,String subject_code){
+    public boolean updateSubjectByMaximum(String subject_code,int maximum){
         SqlSession session = sqlSessionFactory.openSession();
         LectureMapper mapper = session.getMapper(LectureMapper.class);
-
+        boolean flag = true;
         try{
             mapper.updateSubjectByMaximum(maximum,subject_code);
             session.commit();
@@ -277,16 +321,38 @@ public class LectureDAO {
         catch(Exception e){
             e.printStackTrace();
             session.rollback();
+            flag = false;
         }
         finally{
             session.close();
         }
+
+        return flag;
+    }
+
+    public boolean modifySyllabus(int lecture_idx, String syllabus){
+        SqlSession session = sqlSessionFactory.openSession();
+        LectureMapper mapper = session.getMapper(LectureMapper.class);
+        boolean flag = true;
+        try{
+            mapper.modifySyllabus(lecture_idx, syllabus);
+            session.commit();
+            System.out.println("강의계획서가 변경되었습니다.");
+
+        }catch(Exception e){
+            e.printStackTrace();
+            session.rollback();
+            flag = false;
+        }finally {
+            session.close();
+        }
+        return flag;
     }
 
 
-    //================================================================
-    //========================== DELETE ==============================
-    //================================================================
+    //===========================================================================================================
+    // DELETE
+
     // 과목코드로 lecture 삭제하기
     public boolean deleteLectureBySubjectCode(String subject_code){
         SqlSession session = sqlSessionFactory.openSession();
@@ -308,5 +374,38 @@ public class LectureDAO {
         }
         return flag;
     }
+
+    // 과목코드로 syllabus 삭제하기
+    public String deleteSyllabusBySubjectCode(String subject_code){
+        LectureDTO dto = searchBySubjectCode(subject_code);
+        int lecture_idx = dto.getLecture_idx();
+
+        // return 할 URL
+        String SyllabusURL = dto.getSyllabus();
+        // 삭제 진행
+        deleteSyllabus(lecture_idx);
+
+        return SyllabusURL;
+    }
+
+    // 강의계획서 삭제
+    public void deleteSyllabus(int lecture_idx){
+        SqlSession session = sqlSessionFactory.openSession();
+        LectureMapper mapper = session.getMapper(LectureMapper.class);
+
+        try {
+            mapper.deleteSyllabus(lecture_idx);
+            session.commit();
+            System.out.println("강의계획서가 삭제 되었습니다.");
+
+        }catch(Exception e){
+            e.printStackTrace();
+            session.rollback();
+
+        }finally {
+            session.close();
+        }
+    }
+
 
 }
