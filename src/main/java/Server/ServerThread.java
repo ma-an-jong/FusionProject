@@ -21,7 +21,6 @@ import java.util.List;
 
 public class ServerThread extends Thread {
     private static int clientNum = 0;
-    private static HashMap<String,Boolean> duplicatedMap = new HashMap<String,Boolean>();
 
 
     private Connection jdbcConn; //JDBC 연결
@@ -81,7 +80,6 @@ public class ServerThread extends Thread {
             {
                 case Protocol.PT_EXIT: //클라이언트 종료
                 {
-
                     flag = false;
                     clientNum--;
                     packet = new String[1];
@@ -187,39 +185,45 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_MYSUBJECT_ENROLL: //교과목 등록 Clear
+                case Protocol.CS_REQ_MYSUBJECT_ENROLL: //수강신청 등록 Clear
                 {
-                    CourseRegistration dao = new CourseRegistration(sqlSessionFactory);
-                    StudentDAO studentDAO = new StudentDAO(jdbcConn);
-                    LectureDAO lectureDAO = new LectureDAO(sqlSessionFactory);
+                    synchronized (this){
+                        CourseRegistration dao = new CourseRegistration(sqlSessionFactory);
+                        StudentDAO studentDAO = new StudentDAO(jdbcConn);
+                        LectureDAO lectureDAO = new LectureDAO(sqlSessionFactory);
 
-                    String studentCode = packet[Protocol.PT_MYSUBJECT_STUDENT_CODE_POS];
-                    String subjectCode = packet[Protocol.PT_MYSUBJECT_SUBJECT_CODE_POS];
+                        String studentCode = packet[Protocol.PT_MYSUBJECT_STUDENT_CODE_POS];
+                        String subjectCode = packet[Protocol.PT_MYSUBJECT_SUBJECT_CODE_POS];
 
-                    StudentDTO studentDTO = studentDAO.searchByStudent_code(studentCode);
-                    LectureDTO lectureDTO = lectureDAO.searchBySubjectCode(subjectCode);
+                        StudentDTO studentDTO = studentDAO.searchByStudent_code(studentCode);
+                        LectureDTO lectureDTO = lectureDAO.searchBySubjectCode(subjectCode);
 
-                    //학년 학번 강의시간  강의 idx 현재인원 최대인원
-                    CourseDetailsDTO dto = new CourseDetailsDTO();
-                    dto.setStudent_idx(studentDTO.getStudent_idx());
-                    dto.setStudent_code(studentCode);
-                    dto.setLecture_professor_idx(lectureDTO.getLecture_professor_idx());
-                    dto.setGrade(studentDTO.getGrade());
-                    dto.setLecture_time(lectureDTO.getLecture_time());
-                    dto.setLecture_idx(lectureDTO.getLecture_idx());
-                    dto.setCurrent(0);
-                    dto.setMaximum(lectureDTO.getMaximum());
+                        //학년 학번 강의시간  강의 idx 현재인원 최대인원
+                        CourseDetailsDTO dto = new CourseDetailsDTO();
+                        dto.setStudent_idx(studentDTO.getStudent_idx());
+                        dto.setStudent_code(studentCode);
+                        dto.setLecture_professor_idx(lectureDTO.getLecture_professor_idx());
+                        dto.setGrade(studentDTO.getGrade());
+                        dto.setLecture_time(lectureDTO.getLecture_time());
+                        dto.setLecture_idx(lectureDTO.getLecture_idx());
+                        dto.setCurrent(lectureDTO.getCurrent());
+                        dto.setMaximum(lectureDTO.getMaximum());
+
+                        boolean bool;
 
 
-                    boolean bool = dao.addCoure(dto);
-                    packet = new String[1];
+                        bool = dao.addCoure(dto);
 
-                    packet[0] = bool ? "A" : "B";
 
-                    protocol = new Protocol(Protocol.SC_RES_MYSUBJECT_ENROLL);
-                    protocol.setPacket(packet);
-                    writePacket(protocol.getPacket());
-                    break;
+                        packet = new String[1];
+
+                        packet[0] = bool ? "A" : "B";
+
+                        protocol = new Protocol(Protocol.SC_RES_MYSUBJECT_ENROLL);
+                        protocol.setPacket(packet);
+                        writePacket(protocol.getPacket());
+                        break;
+                    }
                 }
                 case Protocol.CS_REQ_MYSUBJECT_VIEW: //내 수강 목록 조회 Clear
                 {
@@ -454,7 +458,7 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_LECTURE_VIEW: //개설 교과목 목록 조회 Clear TODO:  \t -> \n replaceAll
+                case Protocol.CS_REQ_LECTURE_VIEW: //개설 교과목 목록 조회 Clear
                 {
                     LectureDAO dao = new LectureDAO(sqlSessionFactory);
                     List<Lecture_Subject_ProfessorDTO> list = dao.selectAll();
@@ -507,7 +511,7 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_TEACHING_VIEW: //담당 교과목 목록 조회 Clear TODO \t -> \n replaceAll
+                case Protocol.CS_REQ_TEACHING_VIEW: //담당 교과목 목록 조회 Clear
                 {
                     LectureDAO dao = new LectureDAO(sqlSessionFactory);
                     String key = packet[Protocol.PT_TEACHING_KEY_POS];
@@ -595,15 +599,15 @@ public class ServerThread extends Thread {
                     break;
 
                 }
-                case Protocol.CS_REQ_SYLLABUS_DELETE : //강의 계획서 삭제 교수 TODO: 메소드 부족
+                case Protocol.CS_REQ_SYLLABUS_DELETE : //강의 계획서 삭제 교수 Clear
                 {
                     String code = packet[Protocol.PT_SYLLABUS_FILE_KEY_POS];
 
                     LectureDAO lectureDAO = new LectureDAO(sqlSessionFactory);
                     String path = lectureDAO.deleteSyllabusBySubjectCode(code);
-                    System.out.println(path);
                     File file = new File(path);
                     packet = new String[1];
+
                     if(file.exists()){
                         file.delete();
                         packet[0] = "0";
@@ -634,7 +638,7 @@ public class ServerThread extends Thread {
 
                         while((s = br.read()) != -1 )
                         {
-                            context += (char)s;
+                            context +=  (char)s;
                         }
 
                     }
@@ -650,10 +654,10 @@ public class ServerThread extends Thread {
                     protocol.setPacket(packet);
                     writePacket(protocol.getPacket());
                     break;
-
                 }
-                case Protocol.CS_REQ_MYSTUDENT_VIEW:  //담당교과목 수강신청 학생 목록 조회 요청
-                    //TODO : 페이징 기능 \t -> \n replaceAll
+
+                case Protocol.CS_REQ_MYSTUDENT_VIEW:  //담당교과목 수강신청 학생 목록 조회 요청 Clear
+                    //TODO : 페이징 기능
                 {
                     String key = packet[Protocol.PT_MYSTUDENT_KEY_POS];
                     int pageNum = Integer.parseInt(packet[Protocol.PT_MYSTUDENT_PAGENUM_POS]);
@@ -661,7 +665,7 @@ public class ServerThread extends Thread {
 
                     List<StudentDTO> list = dao.selectWithPaging(key,pageNum);
                     packet = new String[list.size() + 1];
-                    packet[0] = list != null ? "8" : "9";
+                    packet[0] = list.size() != 0 ? "8" : "9";
                     int index = 1;
 
                     for(StudentDTO d : list)
@@ -707,7 +711,7 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_PROFESSOR_VIEW://교수 정보 조회 요청 Clear TODO \t -> \n replaceAll
+                case Protocol.CS_REQ_PROFESSOR_VIEW://교수 정보 조회 요청 Clear
                 {
                     String key = packet[Protocol.PT_MEMBER_VIEW_KEY_POS];
                     ProfessorDAO professorDAO = new ProfessorDAO(jdbcConn);
@@ -721,7 +725,7 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_STUDENT_VIEW://학생 정보 조회 요청 Clear TODO \t -> \n replaceAll
+                case Protocol.CS_REQ_STUDENT_VIEW://학생 정보 조회 요청 Clear
                 {
                     String key = packet[Protocol.PT_MEMBER_VIEW_KEY_POS];
                     StudentDAO studentDAO = new StudentDAO(jdbcConn);
@@ -735,7 +739,7 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_ALLMEMBER_VIEW://모든 교수,학생 정보 조회 요청 Clear TODO \t -> \n replaceAll
+                case Protocol.CS_REQ_ALLMEMBER_VIEW://모든 교수,학생 정보 조회 요청 Clear
                 {
                     AdminDAO dao = new AdminDAO(jdbcConn);
                     List<ProfessorDTO> plist = dao.selectAllProfessor();
@@ -817,7 +821,7 @@ public class ServerThread extends Thread {
                     break;
 
                 }
-                case Protocol.CS_REQ_SUBJECT_VIEW: //전체 교과목 정보 요청 Clear TODO \t -> \n replaceAll
+                case Protocol.CS_REQ_SUBJECT_VIEW: //전체 교과목 정보 요청 Clear
                 {
                     SubjectDAO subjectDAO = new SubjectDAO(sqlSessionFactory);
                     List<SubjectDTO> list = subjectDAO.selectAll();
@@ -834,8 +838,7 @@ public class ServerThread extends Thread {
                     writePacket(protocol.getPacket());
                     break;
                 }
-                case Protocol.CS_REQ_LECTUREINFO_VIEW: //개설 교과목 정보 조회 요청
-                    // TODO: 전체출력으로 고치기 TODO \t -> \n replaceAll
+                case Protocol.CS_REQ_LECTUREINFO_VIEW: //개설 교과목 정보 조회 요청 좀이따 같이
                 {
                     LectureDAO lectureDAO = new LectureDAO(sqlSessionFactory);
                     List<Lecture_Subject_ProfessorDTO> list = lectureDAO.selectAll();

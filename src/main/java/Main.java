@@ -63,9 +63,6 @@ public class Main {
             serverThread.start();
 
         }
-        //serverThread.discountClient();
-//            System.out.println("클라이언트 종료:" + socket.getInetAddress() + ":" + socket.getPort());
-//            serverThread.interrupt();
 
     }
 }

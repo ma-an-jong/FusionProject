@@ -58,7 +58,7 @@ public class CourseRegistration {
         return dto;
     }
 
-    public boolean addCoure(CourseDetailsDTO courseDetailsDTO){
+    public synchronized  boolean addCoure(CourseDetailsDTO courseDetailsDTO){
         SqlSession session = sqlSessionFactory.openSession();
         CourseMapper mapper = session.getMapper(CourseMapper.class);
 
