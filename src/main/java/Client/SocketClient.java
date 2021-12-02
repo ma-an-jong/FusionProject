@@ -49,12 +49,12 @@ public class SocketClient {
         return null;
     }
 
+    //배열 0번째 값 삭제
     public static String[] removeElement(String [] arr, int index){
         String[] arrDestination = new String[arr.length - 1];
         int remainingElements = arr.length - ( index + 1 );
         System.arraycopy(arr, 0, arrDestination, 0, index);
         System.arraycopy(arr, index + 1, arrDestination, index, remainingElements);
-//        System.out.println("Elements -- "  + Arrays.toString(arrDestination));'=
         return arrDestination;
     }
 
@@ -70,25 +70,5 @@ public class SocketClient {
             e.printStackTrace();
             System.out.println("write에 실패하였습니다.");
         }
-    }
-
-    public String readPacket()
-    {
-        String str = new String();
-        try
-        {   int c;
-            while((c = bufferedReader.read()) != -1)
-            {
-                str += (char)c;
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            System.out.println("read에 실패하였습니다.");
-        }
-
-        System.out.println(str);
-        return str;
     }
 }

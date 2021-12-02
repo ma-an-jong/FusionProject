@@ -15,9 +15,12 @@ public class Protocol {
         this.protocolType = protocolType;
         getPacket(protocolType);
     }
+    
+    //파일 저장을 위한 static 경로
     public static final String staticPath = "C:\\Users\\KIMMINJONG\\Desktop\\static\\";
-    public static final int TYPE_DEFINED_POS = 0;
-    public static final String splitter ="!@#%!@#%";
+
+    public static final int TYPE_DEFINED_POS = 0; //프로토콜 타입 위치
+    public static final String splitter ="!@#%!@#%"; //구분자
     public static final String PT_UNDEFINED = "undefined";
 
     //로그인 정보 위치
@@ -26,7 +29,8 @@ public class Protocol {
     public static final int PT_LOGIN_KEY_POS = 1;  //로그인 응답 학번/교번 위치
     public static final int PT_LOGIN_GRADE_POS = 2; //로그인 응답 학년 위치
     public static final int PT_LOGIN_CATEGORY_POS = 3; //로그인 응답 카테고리 위치
-    public static final int PT_LOGIN_CODE_POS = 4;
+    public static final int PT_LOGIN_CODE_POS = 4; //로그인 응답 학번,교번 위치
+
     //개인정보 수정 위치
     public static final int PT_PERSONALINFO_CODE_POS = 1;
     public static final int PT_PERSONALINFO_ID_POS = 2;
@@ -120,16 +124,6 @@ public class Protocol {
     public static final String PT_EXIT = "0"; //프로그램 종료
     public static final String PT_REQ_LOGIN = "1"; //로그인 요청
     public static final String PT_LOGIN_RESULT = "2"; //로그인 요청 응답
-    public static final String PT_REQ_SENDFILE = "3"; //파일 전송 요청
-    public static final String PT_RES_SENDFILE = "4"; //파일 전송 요청 응답
-    public static final String PT_REQ_FILE = "5"; //파일 전송 데이터
-    public static final String PT_RES_FILE = "6"; //파일 전송 성공 여부
-    public static final String PT_REQ_VIEW = "7"; //조회 요청
-    public static final String PT_RES_VIEW = "8"; //조회 요청 응답
-    public static final String PT_REQ_ENROLL = "9"; //등록 요청
-    public static final String PT_RES_ENROLL = "A"; //등록 요청 응답
-    public static final String PT_REQ_REVISE = "B"; //정정 요청
-    public static final String PT_RES_REVISE = "C"; //정정 요청 응답
 
     //학생
     //수강과목 등록,수정,삭제

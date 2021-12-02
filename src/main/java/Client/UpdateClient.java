@@ -9,7 +9,6 @@ public class UpdateClient {
     Scanner sc = new Scanner(System.in);
 
     //수정
-    //정보별로 칸 정하고 수정 안된 칸은 비워서 보내주기
     //학생 개인정보 수정
     public String[] modifyStudent(String n) {
         String modifystd[] = new String[8];
@@ -79,7 +78,7 @@ public class UpdateClient {
             System.out.println("-------------------------------");
 
             modifyprof[0] = Protocol.CS_REQ_PROFESSOR_PERSONALINFO_UPDATE;
-            modifyprof[1] = num;
+            modifyprof[1] = num; //교번
 
             int ch = sc.nextInt();
             if(ch == 6) break;
@@ -107,32 +106,12 @@ public class UpdateClient {
                     break;
             }
         }
-//        for(int i=0 ; i<6 ; i++) {
-//            if(newProf[i] != null) modifyprof[i+1] = newProf[i];
-//            else modifyprof[i+1] = "";
-//        }
 
         return modifyprof;
     }
 
-    //교수
-    /*
-    //수강 정정 요청
-    public String[] modifySubject() {
-        String correction[] = new String[2];
-        SimpleDateFormat form = new SimpleDateFormat( "yyyy-MM-dd");
-        Date date = new Date();
-        String nowDate = form.format(date);
-
-        correction[0] = Protocol.CS_REQ_MYSUBJECT_MODIFY;
-        correction[1] = nowDate;
-
-        return correction;
-    }
-     */
-
     //교과목 수정(과목명 수정)
-    public String[] updateSubject(String category) {
+    public String[] updateSubject() {
         String updateSub[] = new String[4];
 
         System.out.print("수정할 과목명 : ");
@@ -155,7 +134,7 @@ public class UpdateClient {
         modifylec[0] = Protocol.CS_REQ_LECTURE_UPDATE;
 
         System.out.print("수정할 개설교과목코드 : ");
-        modifylec[1] = sc.next();
+        modifylec[1] = sc.next(); //과목코드 입력받아서 해당 교과목 수정
 
         while(true) {
             System.out.println("-------------개설교과목 수정---------------");
@@ -204,7 +183,7 @@ public class UpdateClient {
     }
 
     //교과목 삭제
-    public String[] deleteSubject(String category) {
+    public String[] deleteSubject() {
         String sub[] = new String[2];
 
         System.out.print("삭제할 과목 코드 : ");

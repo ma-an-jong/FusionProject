@@ -3,8 +3,6 @@ package Client;
 import java.util.Scanner;
 
 //조회 요청
-//TODO: 카테고리, 학번, 학년 들고있다고 가정하는 걸로 수정
-//TODO: 시간표는 일렬로 시간순으로 출력(클래스 따로 만듦) -> 월12, 수34 있으면 월12\수34 이렇게 구분(\)
 public class LookupClient {
     Scanner sc = new Scanner(System.in);
 
@@ -59,7 +57,7 @@ public class LookupClient {
     //교수 정보 조회(선택조회)
     public String[] professorLookUp() {
         System.out.print("조회할 교수 교번 : ");
-        String profNum = sc.next();
+        String profNum = sc.next(); //교번으로 조회
 
         String prof[] = new String[2];
         prof[0] = Protocol.CS_REQ_PROFESSOR_VIEW;
@@ -71,7 +69,7 @@ public class LookupClient {
     //학생 정보 조회(선택조회)
     public String[] studentLookUp() {
         System.out.print("조회할 학생 학번 : ");
-        String stdNum = sc.next();
+        String stdNum = sc.next(); //학번으로 조회
 
         String std[] = new String[2];
         std[0] = Protocol.CS_REQ_STUDENT_VIEW;
