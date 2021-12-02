@@ -107,7 +107,8 @@ public class Main {
                             else System.out.println("조회 실패");
                             break;
                         case 10:
-                            distinct = true;
+                            String logout[] = socketClient.run(loginClient.logout());
+                            distinct = true; //while문 빠져나감
                             break;
                     }
                     break;
@@ -210,7 +211,8 @@ public class Main {
                             }
                             break;
                         case 10:
-                            distinct = true;
+                            String logout[] = socketClient.run(loginClient.logout());
+                            distinct = true; //while문 빠져나감
                             break;
                     }
                     break;
@@ -220,7 +222,7 @@ public class Main {
                     switch (selectMenu) {
                         case 1:
                             //교수 계정 생성
-                            String enrollProf[] = socketClient.run(enrollClient.enrollProfessor(category));
+                            String enrollProf[] = socketClient.run(enrollClient.enrollProfessor());
                             break;
                         case 2:
                             //학생 계정 생성
@@ -232,11 +234,11 @@ public class Main {
                             break;
                         case 4:
                             //교과목 수정
-                            String updateSub[] = socketClient.run(updateClient.updateSubject(category));
+                            String updateSub[] = socketClient.run(updateClient.updateSubject());
                             break;
                         case 5:
                             //교과목 삭제
-                            String deleteSub[] = socketClient.run(updateClient.deleteSubject(category));
+                            String deleteSub[] = socketClient.run(updateClient.deleteSubject());
                             if(deleteSub[1].equals("14")) System.out.println("교과목 삭제 성공");
                             else System.out.println("교과목 삭제 실패");
                             break;
@@ -306,7 +308,8 @@ public class Main {
                             }
                             break;
                         case 16:
-                            distinct = true;
+                            String logout[] = socketClient.run(loginClient.logout());
+                            distinct = true; //while문 빠져나감
                             break;
                     }
                     break;

@@ -17,4 +17,12 @@ public class LoginClient {
 
         return loginArr;
     }
+
+    public String[] logout(){
+        String logout[] = new String[1];
+
+        logout[0]= Protocol.PT_EXIT;
+
+        return logout;
+    }
 }

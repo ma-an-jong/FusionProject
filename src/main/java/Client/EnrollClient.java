@@ -13,6 +13,7 @@ public class EnrollClient {
         String regist[] = new String[2];
 
         regist[0] = Protocol.CS_REQ_REGISTRATION;
+        //해당 학년 수강신청 기간인지 확인
         regist[1] = grade;
 
         return regist;
@@ -91,7 +92,7 @@ public class EnrollClient {
     }
 
     //교수 계정 등록
-    public String[] enrollProfessor(String category) {
+    public String[] enrollProfessor() {
         String prof[] = new String[6];
 
         System.out.println("------------교수 계정 등록------------");
@@ -117,7 +118,7 @@ public class EnrollClient {
     }
 
     //교과목 등록
-    //TODO : 과목코드, 과목명, 학년
+    //과목코드, 과목명, 학년
     public String[] enrollSubject(String category) {
         String subject[] = new String[4];
 
@@ -138,8 +139,7 @@ public class EnrollClient {
     }
 
     //개설교과목 등록
-    //TODO : 과목코드, 교번, 강의시간, 최대강의인원, 강의실
-    //TODO : 월12, 수34 있으면 월12/수34 이렇게 구분(/)
+    //월12, 수34 있으면 월12/수34 이렇게 구분(/)
     public String[] enrollLecture() {
         String lecture[] = new String[6];
 

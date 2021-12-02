@@ -2,6 +2,7 @@ package Server;
 
 public class TimeTableInfo implements Comparable<TimeTableInfo> {
 
+    //각 요일에 대한 비교를 하기위해 값 설정
     private static enum Day {
         월(1),
         화(2),
@@ -28,7 +29,7 @@ public class TimeTableInfo implements Comparable<TimeTableInfo> {
         this.classRoom = classRoom;
     }
 
-
+    // 요일별로 정렬하기위한 compareTo메소드 오버라이딩
     @Override
     public int compareTo(TimeTableInfo o) {
         if(this.lectureTime.charAt(0) == o.lectureTime.charAt(0))
@@ -36,7 +37,7 @@ public class TimeTableInfo implements Comparable<TimeTableInfo> {
             String a = this.lectureTime.substring(1);
             String b = o.lectureTime.substring(1);
 
-            return a.hashCode() - b.hashCode();
+            return a.compareTo(b);
         }
         else
         {
